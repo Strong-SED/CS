@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
+
+        $middleware->alias([
+            'redirect.by.role' => \App\Http\Middleware\RedirectByRole::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

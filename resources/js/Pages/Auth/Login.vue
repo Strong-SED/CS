@@ -18,6 +18,9 @@
         <!-- Carte de connexion -->
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
+                <p v-if="showEmailError" class="mt-2 text-sm text-slate-900  bg-red-300 rounded-md p-2 m-5">
+                    {{ form.errors.email }}
+                </p>
                 <!-- Formulaire -->
                 <form class="mb-0 space-y-6" @submit.prevent="submit">
                     <!-- Champ Email -->
@@ -130,6 +133,7 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
+import { ref, watch } from 'vue'
 
 const form = useForm({
     email: '',
@@ -137,11 +141,38 @@ const form = useForm({
     remember: false,
 })
 
+// Réactive pour contrôler l'affichage de l'erreur
+const showEmailError = ref(false)
+let errorTimeout = null
+
+// Watcher pour détecter les changements d'erreur
+watch(
+  () => form.errors.email,
+  (newError) => {
+    if (newError) {
+      showEmailError.value = true
+
+      // Effacer le timeout précédent s'il existe
+      if (errorTimeout) clearTimeout(errorTimeout)
+
+      // Masquer l'erreur après 3 secondes
+      errorTimeout = setTimeout(() => {
+        showEmailError.value = false
+        form.clearErrors('email') // Optionnel: efface aussi l'erreur du form
+      }, 3000)
+    } else {
+      showEmailError.value = false
+    }
+  }
+)
+
+
 const submit = () => {
-    form.post(route('login'), {
+    form.post(route('Login_verifier'), {
         onFinish: () => form.reset('password'),
     })
 }
+
 </script>
 
 <script>
