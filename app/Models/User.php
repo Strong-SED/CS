@@ -25,7 +25,9 @@ class User extends Authenticatable
         'password',
         'role',
         'specialite',
-        'centre_de_sante_id'
+        'email_verified_at',
+        'email_verification_token',
+        'centre_de_sante_id',
     ];
 
     protected $hidden = [

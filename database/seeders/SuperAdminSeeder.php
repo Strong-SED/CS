@@ -16,11 +16,13 @@ class SuperAdminSeeder extends Seeder
         User::create([
             'nom' => 'Super',
             'prenom' => 'Admin',
-            'email' => 'superadmin@example.com',
-            'password' => Hash::make('password123'), // ⚠️ Tu peux changer ça
+            'email' => 'staylegyver@gmail.com',
+            'password' => Hash::make('password123'), // ⚠️ Utilise un mot de passe plus sécurisé en production
             'role' => 'super_admin',
-            'specialite' => null,
-            'centre_de_sante_id' => null, // Pas rattaché à un centre
+            'specialite' => null, // Peut rester nullable
+            'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
+            'centre_de_sante_id' => null, // Rattachement éventuel à un centre
         ]);
+
     }
 }

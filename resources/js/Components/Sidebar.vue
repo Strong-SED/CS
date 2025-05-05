@@ -44,11 +44,11 @@
                 </Link>
 
                 <!-- Test -->
-                <Link  :href="route('SuperAdmin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link  :href="route('SuperAdmin.Create')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-regular fa-flask-vial text-sm"></i>
+                        <i class="fas fa-solid fa-user-plus text-sm"></i>
                     </div>
-                    <span class="ml-3 font-medium">Test-Page</span>
+                    <span class="ml-3 font-medium">Ajout d'Administrateur CS</span>
                 </Link>
             </div>
 
@@ -58,7 +58,7 @@
                 class="flex-1 px-3 py-4 space-y-1 overflow-y-auto"
                 v-if="user.role === role.admin">
                 <!-- SuperAdmin -->
-                <Link :href="route('SuperAdmin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link :href="route('AdminCS.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                         <i class="fas fa-tachometer-alt text-sm"></i>
                     </div>
@@ -66,7 +66,7 @@
                 </Link>
 
                 <!-- Test -->
-                <Link  :href="route('SuperAdmin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link  :href="route('AdminCS.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                         <i class="fas fa-regular fa-flask-vial text-sm"></i>
                     </div>

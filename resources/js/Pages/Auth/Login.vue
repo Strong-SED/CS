@@ -1,8 +1,8 @@
 <template>
     <div
-        class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+        class="min-h-screen bg-gradient-to-r from-indigo-200 to-white flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
         <!-- Logo et Titre -->
-        <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <div class="sm:mx-auto sm:w-full sm:max-w-md text-center animous">
             <div class="flex justify-center">
                 <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -12,15 +12,19 @@
                 </svg>
             </div>
             <h2 class="mt-6 text-3xl font-extrabold text-gray-900 ">Connexion à votre compte</h2>
+        </div>
 
+        <!-- Messages d'état -->
+        <div v-if="showEmailError" class="sm:mx-auto sm:w-full sm:max-w-md animous">
+            <p class="text-red-800 bg-red-200 m-4 text-sm rounded-2xl p-4 transition-all duration-700">
+                {{ form.errors.email }}
+            </p>
         </div>
 
         <!-- Carte de connexion -->
-        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md animous">
             <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10 border border-gray-200">
-                <p v-if="showEmailError" class="mt-2 text-sm text-slate-900  bg-red-300 rounded-md p-2 m-5">
-                    {{ form.errors.email }}
-                </p>
+
                 <!-- Formulaire -->
                 <form class="mb-0 space-y-6" @submit.prevent="submit">
                     <!-- Champ Email -->
@@ -67,7 +71,10 @@
                         </div>
 
                         <div class="text-sm">
-                            <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Mot de passe oublié?</a>
+                            <Link :href="route('forgot_password')"
+                                class="font-medium text-blue-600 hover:text-blue-500">
+                            Mot de passe oublié?
+                            </Link>
                         </div>
                     </div>
 
@@ -107,8 +114,8 @@
         </div>
 
         <!-- Pied de page -->
-        <div class="mt-8 text-center text-sm text-gray-500">
-            <p>© 2023 CS Ops. Tous droits réservés.</p>
+        <div class="mt-8 text-center text-sm text-gray-500 animous2">
+            <p>© {{ Datetime.getFullYear() }} CS Ops. Tous droits réservés.</p>
             <div class="mt-2 flex justify-center space-x-6">
                 <a href="#" class="text-gray-400 hover:text-gray-500">
                     <span class="sr-only">Conditions d'utilisation</span>
@@ -133,7 +140,11 @@
 
 <script setup>
 import { useForm } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3';
 import { ref, watch } from 'vue'
+import { route } from 'ziggy-js';
+
+const Datetime = new Date()
 
 const form = useForm({
     email: '',
@@ -147,23 +158,23 @@ let errorTimeout = null
 
 // Watcher pour détecter les changements d'erreur
 watch(
-  () => form.errors.email,
-  (newError) => {
-    if (newError) {
-      showEmailError.value = true
+    () => form.errors.email,
+    (newError) => {
+        if (newError) {
+            showEmailError.value = true
 
-      // Effacer le timeout précédent s'il existe
-      if (errorTimeout) clearTimeout(errorTimeout)
+            // Effacer le timeout précédent s'il existe
+            if (errorTimeout) clearTimeout(errorTimeout)
 
-      // Masquer l'erreur après 3 secondes
-      errorTimeout = setTimeout(() => {
-        showEmailError.value = false
-        form.clearErrors('email') // Optionnel: efface aussi l'erreur du form
-      }, 3000)
-    } else {
-      showEmailError.value = false
+            // Masquer l'erreur après 3 secondes
+            errorTimeout = setTimeout(() => {
+                showEmailError.value = false
+                form.clearErrors('email') // Optionnel: efface aussi l'erreur du form
+            }, 3000)
+        } else {
+            showEmailError.value = false
+        }
     }
-  }
 )
 
 
@@ -180,3 +191,26 @@ export default {
     layout: null,
 }
 </script>
+
+<style scoped>
+.animous {
+    animation: appear 1s ease-in-out;
+}
+
+.animous2 {
+    opacity: 0;
+    animation: appear 1s ease-in-out 1.5s forwards;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>

@@ -17,9 +17,12 @@ return new class extends Migration
             $table->string('prenom')->nullable();
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'admin_cs', 'medecin', 'secretaire', 'laborantin']);
             $table->string('specialite')->nullable(); // Pour les médecins
-            
+            $table->enum('role', ['super_admin', 'admin_cs', 'medecin', 'secretaire', 'laborantin']);
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('email_verification_token')->nullable();
+
+
             // Clé étrangère vers le centre (pour les médecins/secrétaires/etc.)
             $table->unsignedBigInteger('centre_de_sante_id')->nullable();
 

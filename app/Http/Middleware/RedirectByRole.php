@@ -12,18 +12,25 @@ class RedirectByRole
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
+        // Redirection si non connecté
         if (!$user) {
             return redirect()->route('login');
         }
 
-        // Si l'utilisateur essaie d'accéder à la redirection de rôle
+        // Vérifie si l'utilisateur a confirmé son email (avec le champ email_verified_at)
+        if (is_null($user->email_verified_at)) {
+            Auth::logout();
+            return redirect()->route('login')->withErrors([
+                'email' => 'Votre adresse e-mail n\'a pas encore été vérifiée.',
+            ]);
+        }
+
+        // Redirection en fonction du rôle (si route de redirection)
         if ($request->routeIs('role.redirect')) {
             switch ($user->role) {
                 case User::ROLE_SUPER_ADMIN:
@@ -44,9 +51,9 @@ class RedirectByRole
             }
         }
 
-        // Vérification des rôles pour les autres routes
+        // Vérifie si la route nécessite un rôle spécifique
         $requiredRole = $request->route()->getAction('role');
-        if ($user->role !== $requiredRole) {
+        if ($requiredRole && $user->role !== $requiredRole) {
             Auth::logout();
             return redirect()->route('login')->withErrors([
                 'auth' => 'Vous n\'avez pas les droits nécessaires.'
