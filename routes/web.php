@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SecretaireController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -63,6 +64,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['auth', 'checkAdmin'])->group(function () {
         Route::get('/AdminCS', [AdminController::class, 'V_Dashboard'])->name('AdminCS.Home');
         Route::get('/AdminCS/create', [AdminController::class, 'V_create'])->name('AdminCS.Create');
+        Route::post('/AdminCS/store', [AdminController::class, 'store'])->name('AdminCS.store');
+        Route::put('/AdminCS/{user}', [AdminController::class, 'update'])->name('AdminCS.update');
+        Route::delete('/AdminCS/{user}', [AdminController::class, 'destroy'])->name('AdminCS.destroy');
     });
 
     Route::get('/AdminCS/CS', [AdminController::class, 'V_CentreDS'])
@@ -79,7 +83,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Medecin', fn() => Inertia::render('Medecin/Home'))->name('Medecin.Home');
 
     // Secrétaire
-    Route::get('/Secretaire', fn() => Inertia::render('Secretaire/Home'))->name('Secretaire.Home');
+    Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');
+    Route::get('/Secretaire/Dashboard', [SecretaireController::class , 'V_Dashboard'])->name('Secretaire.Dashboard');
 
     // Laborantin
     Route::get('/Laborantin', fn() => Inertia::render('Laborantin/Home'))->name('Laborantin.Home');

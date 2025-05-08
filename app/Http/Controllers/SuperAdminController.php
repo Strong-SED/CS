@@ -34,9 +34,7 @@ class SuperAdminController extends Controller
         return inertia('SuperAdmin/Home', [
             'admin' => $formattedAdmins
         ]);
-    }   
-
-
+    }
 
 
 
@@ -44,6 +42,8 @@ class SuperAdminController extends Controller
     {
         return inertia('SuperAdmin/Create');
     }
+
+    
 
     public function store(Request $request)
     {

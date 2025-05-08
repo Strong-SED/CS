@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AdminCS extends User
 {
     protected $table = 'users';
-
+    
     protected static function booted()
     {
         static::addGlobalScope('role', function (Builder $builder) {

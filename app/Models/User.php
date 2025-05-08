@@ -93,8 +93,7 @@ class User extends Authenticatable
     }
 
     public function centreDeSante()
-{
-    return $this->belongsTo(CentreDeSante::class);
-}
-
+    {
+        return $this->belongsTo(CentreDeSante::class);
+    }
 }

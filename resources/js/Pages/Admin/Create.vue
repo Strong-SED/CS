@@ -30,8 +30,6 @@
 
 
 
-
-
             <!-- Formulaire d'ajout -->
             <div class="bg-white rounded-lg shadow-md p-6 mb-8 border-l-4 border-blue-500 animous">
                 <form @submit.prevent="submit" class="space-y-4">
@@ -48,6 +46,28 @@
                                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                         </div>
                     </div>
+
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Rôle</label>
+                            <select id="role" v-model="form.role" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                <option value="" disabled selected>Sélectionnez un rôle</option>
+                                <option v-for="(value, key) in role" :key="key" :value="key">
+                                    {{ value }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div v-if="form.role === 'medecin'">
+                            <label for="specialite" class="block text-sm font-medium text-gray-700">Spécialité</label>
+                            <input id="specialite" v-model="form.specialite" type="text"
+                                :required="form.role === 'medecin'"
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+
 
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
@@ -91,23 +111,47 @@
 
 <script setup>
 import { Head, useForm, usePage } from '@inertiajs/vue3'
-import { ref, watch } from 'vue'
+import { watch } from 'vue'
 
 const page = usePage()
 
-// Formulaire simplifié (sans les champs password)
 const form = useForm({
     nom: '',
     prenom: '',
-    email: ''
+    email: '',
+    specialite: null,
+    role: '',
 })
 
+const role = {
+    medecin: 'Médecin',
+    secretaire: 'Secrétaire',
+    laborantin: 'Laborantin',
+}
+
 const submit = () => {
-    form.post(route('SuperAdmin.store'), {
+    // Préparation des données avant envoi
+    const formData = {
+        ...form.data(),
+        specialite: form.role === 'medecin' ? form.specialite : null
+    }
+
+    form.transform(() => formData).post(route('AdminCS.store'), {
         preserveScroll: true,
-        onSuccess: () => form.reset()
+        onSuccess: () => form.reset(),
+        onError: () => {
+            if (form.role !== 'medecin') {
+                form.clearErrors('specialite')
+            }
+        }
     })
 }
+
+watch(() => form.role, (newRole) => {
+    if (newRole !== 'medecin') {
+        form.specialite = null
+    }
+})
 
 // Optionnel : Fermer automatiquement la notification après 5 secondes
 watch(() => page.props.flash, (newVal) => {
