@@ -8,6 +8,26 @@
             <!-- Titre du dashboard -->
             <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard Super Admin</h1>
 
+            <!-- Notification Toast -->
+            <div v-if="$page.props.flash.success || $page.props.flash.error"
+                class="w-96 h-20 border-l-5 absolute top-26 right-10 bg-white rounded-xl shadow-lg transition-all duration-300"
+                :class="{
+                    'border-green-600': $page.props.flash.success,
+                    'border-red-600': $page.props.flash.error
+                }">
+                <div class="w-full h-full p-3 grid grid-cols-5 items-center">
+                    <div class="flex justify-center items-center col-span-1">
+                        <i v-if="$page.props.flash.success"
+                            class="fas text-3xl text-green-600 fa-solid fa-circle-check"></i>
+                        <i v-if="$page.props.flash.error"
+                            class="fas text-3xl text-red-600 fa-solid fa-circle-exclamation"></i>
+                    </div>
+                    <p class="text-sm text-slate-900 w-full col-span-4">
+                        {{ $page.props.flash.success || $page.props.flash.error }}
+                    </p>
+                </div>
+            </div>
+
             <!-- Statistiques des administrateurs -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white rounded-lg shadow p-6 border-l-4 border-indigo-600">
@@ -18,7 +38,7 @@
                 <!-- Vous pouvez ajouter d'autres statistiques ici -->
                 <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-600">
                     <h3 class="text-xl font-semibold text-gray-700 mb-2">Nombre d'admin avec CS</h3>
-                    <p class="text-3xl font-bold text-green-600">0</p>
+                    <p class="text-3xl font-bold text-green-600">{{ adminsAvecCentre }}</p>
                 </div>
 
                 <!-- <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-600">
@@ -41,13 +61,14 @@
                                     ID</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Nom</th>
+                                    Nom & Prénom</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Email</th>
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                </th>
+                                    Centre de Santé</th>
+
                                 <th scope="col"
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Actions</th>
@@ -56,9 +77,13 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="item in admin" :key="item.id"> <!-- Supprimez .admin ici -->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.id }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ item.nom }}
-                                    {{ item.prenom }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ item.nom }} {{ item.prenom }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ item.email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ item.centreDeSante ? item.centreDeSante.nom : 'Pas de centre de santé à son actif' }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <button @click="editAdmin(item)" class="text-indigo-600 hover:text-indigo-900 mr-3">
                                         Modifier
@@ -155,12 +180,22 @@
 </template>
 
 <script setup>
-import { Head, router } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { Head, usePage, router } from '@inertiajs/vue3'
+import { ref, watch, computed } from 'vue'
+
+const page = usePage()
 
 const props = defineProps({
     admin: Array
 })
+
+props.admin.forEach(admin => {
+    console.log(admin.nom, '->', admin.centre_sante.id);
+});
+
+
+
+
 
 const editingAdmin = ref(null)
 const showEditModal = ref(false)
@@ -194,4 +229,18 @@ const deleteAdmin = () => {
         }
     })
 }
+
+const adminsAvecCentre = computed(() =>
+    props.admin.filter(a => a.centreDeSante !== null).length
+);
+
+
+// Optionnel : Fermer automatiquement la notification après 5 secondes
+watch(() => page.props.flash, (newVal) => {
+    if (newVal.success || newVal.error) {
+        setTimeout(() => {
+            page.props.flash = {}
+        }, 5000)
+    }
+}, { deep: true });
 </script>

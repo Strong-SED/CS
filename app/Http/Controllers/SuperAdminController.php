@@ -15,12 +15,30 @@ class SuperAdminController extends Controller
     //
     public function V_Dashboard()
     {
-        $admin = AdminCS::all();
+        // Récupérer les AdminCS avec leurs Centres de Santé associés
+        $admins = AdminCS::with('centreDeSante:id,nom,admin_c_s_id')->get();
+
+        // Transformer les données pour le frontend
+        $formattedAdmins = $admins->map(function ($admin) {
+            return [
+                'id' => $admin->id,
+                'nom' => $admin->nom,
+                'prenom' => $admin->prenom,
+                'email' => $admin->email,
+                'centre_sante' => $admin->centreDeSante ? $admin->centreDeSante->nom : 'Pas de centre de santé à son actif',
+                // Ajoutez l'objet complet si nécessaire
+                'centreDeSante' => $admin->centreDeSante
+            ];
+        });
 
         return inertia('SuperAdmin/Home', [
-            'admin' => $admin
+            'admin' => $formattedAdmins
         ]);
-    }
+    }   
+
+
+
+
 
     public function V_create_admin()
     {
@@ -57,15 +75,9 @@ class SuperAdminController extends Controller
                 )
             );
 
-            return redirect()
-                ->back()
-                ->with('msg', 'Administrateur enregistré. Un email avec le mot de passe temporaire a été envoyé.')
-                ->with('success', true);
+            return redirect()->back()->with('success', 'Admin enregistré');
         } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('msg', 'Erreur: ' . $e->getMessage())
-                ->with('error', true);
+            return redirect()->back()->with('error', 'Une erreur est survenue');
         }
     }
 
@@ -81,7 +93,7 @@ class SuperAdminController extends Controller
 
         $admin->update($validated);
 
-        return redirect()->back()->with('msg', 'Administrateur mis à jour avec succès')->with('success', true);
+        return redirect()->back()->with('success', 'Administrateur mis à jour avec succès');
     }
 
     // Méthode pour la suppression
@@ -89,6 +101,6 @@ class SuperAdminController extends Controller
     {
         $admin->delete();
 
-        return redirect()->back()->with('msg', 'Administrateur supprimé avec succès')->with('success', true);
+        return redirect()->back()->with('success', 'Administrateur supprimé avec succès');
     }
 }

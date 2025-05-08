@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
@@ -54,10 +55,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/SuperAdmin/create', [SuperAdminController::class, 'V_create_admin'])->name('SuperAdmin.Create');
     Route::post('/SuperAdmin/store', [SuperAdminController::class, 'store'])->name('SuperAdmin.store');
     Route::put('/super-admin/{admin}', [SuperAdminController::class, 'update'])->name('SuperAdmin.update');
-Route::delete('/super-admin/{admin}', [SuperAdminController::class, 'destroy'])->name('SuperAdmin.destroy');
+    Route::delete('/super-admin/{admin}', [SuperAdminController::class, 'destroy'])->name('SuperAdmin.destroy');
+
+
 
     // Admin Centre de Santé
-    Route::get('/AdminCS', fn() => Inertia::render('Admin/Admin_Home'))->name('AdminCS.Home');
+    Route::middleware(['auth', 'checkAdmin'])->group(function () {
+        Route::get('/AdminCS', [AdminController::class, 'V_Dashboard'])->name('AdminCS.Home');
+        Route::get('/AdminCS/create', [AdminController::class, 'V_create'])->name('AdminCS.Create');
+    });
+
+    Route::get('/AdminCS/CS', [AdminController::class, 'V_CentreDS'])
+        ->middleware('auth')
+        ->name('AdminCS.Centre');
+    Route::post('/AdminCS/CS/create', [AdminController::class, 'CS_store'])
+        ->middleware('auth')
+        ->name('CS.Create');
+
+
+
 
     // Médecin
     Route::get('/Medecin', fn() => Inertia::render('Medecin/Home'))->name('Medecin.Home');

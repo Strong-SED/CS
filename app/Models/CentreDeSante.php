@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class CentreDeSante extends Model
 {
+    protected $fillable = [
+        'nom',
+        'adresse',
+        'ville',
+        'admin_c_s_id',
+    ];
+
     public function adminCS()
     {
-        return $this->belongsTo(AdminCS::class, 'created_by_user_id');
+        return $this->belongsTo(AdminCS::class, 'admin_c_s_id', 'id');
     }
 
     public function medecins()
@@ -30,6 +37,6 @@ class CentreDeSante extends Model
     public function patients()
     {
         return $this->belongsToMany(Patient::class, 'centre_patient')
-                    ->withPivot('created_by_user_id', 'date_enregistrement');
+            ->withPivot('created_by_user_id', 'date_enregistrement');
     }
 }

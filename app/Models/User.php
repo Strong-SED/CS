@@ -92,4 +92,9 @@ class User extends Authenticatable
         return $this->role === self::ROLE_LABORANTIN;
     }
 
+    public function centreDeSante()
+{
+    return $this->belongsTo(CentreDeSante::class);
+}
+
 }

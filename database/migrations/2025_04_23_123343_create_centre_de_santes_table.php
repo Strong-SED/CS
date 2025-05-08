@@ -17,22 +17,21 @@ return new class extends Migration
             $table->string('adresse');
             $table->string('ville');
 
-            // Clé étrangère vers l'Admin CS créateur (un centre a UN créateur)
-            $table->unsignedBigInteger('created_by_user_id')->unique(); // Un centre n'a qu'un seul admin CS responsable
+            // Clé étrangère vers l'AdminCS responsable
+            $table->unsignedBigInteger('admin_c_s_id')->nullable()->unique();
 
             $table->softDeletes();
             $table->timestamps();
 
-            // Contrainte : created_by_user_id doit référencer un user avec role = admin_cs
-            // Note: MySQL/PostgreSQL supportent les CHECK constraints, mais pas les WHERE dans les FK.
-            $table->foreign('created_by_user_id')
+            $table->foreign('admin_c_s_id')
                   ->references('id')
-                  ->on('users');
-                  // ->where('role', User::ROLE_ADMIN_CS); // Non supporté directement en SQL pur
+                  ->on('users')
+                  ->onDelete('set null');
 
-            // Index pour les performances
+            // Index
             $table->index('ville');
-            $table->index('created_by_user_id');
+            $table->index('admin_c_s_id');
+
         });
     }
 
