@@ -102,25 +102,26 @@
                 <!-- SuperAdmin -->
                 <Link :href="route('Secretaire.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-solid fa-house"></i>
+                        <i class="fas fa-solid fa-house text-lg"></i>
                     </div>
                     <span class="ml-3 font-medium">Home</span>
                 </Link>
 
+
+                <Link  :href="route('Secretaire.CreateP')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                    <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-solid fa-person-circle-plus text-lg"></i>
+                    </div>
+                    <span class="ml-3 font-medium">Enregistrer un patient</span>
+                </Link>
+
                 <Link :href="route('Secretaire.Dashboard')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-tachometer-alt text-sm"></i>
+                        <i class="fas fa-tachometer-alt text-lg"></i>
                     </div>
                     <span class="ml-3 font-medium">Dashboard</span>
                 </Link>
 
-                <!-- Test -->
-                <Link  :href="route('Secretaire.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
-                    <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-regular fa-flask-vial text-sm"></i>
-                    </div>
-                    <span class="ml-3 font-medium">Test-Page</span>
-                </Link>
             </div>
 
             <!-- Laborantin -->

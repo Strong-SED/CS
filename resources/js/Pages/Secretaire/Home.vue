@@ -12,7 +12,7 @@
             </div>
 
             <!-- Statistiques rapides -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 animous">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center">
                     <div class="bg-blue-100 p-4 rounded-full mr-4">
                         <i class="fas fa-user-injured text-2xl text-blue-600"></i>
@@ -55,15 +55,14 @@
             </div>
 
             <!-- Après la section des statistiques -->
-            <div class="mb-10 bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+            <div class="mb-10 bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden animous2">
                 <h3 class="text-xl font-bold text-gray-800 p-6 pb-2">Guide Rapide de la Secrétaire</h3>
                 <p class="text-gray-500 px-6">Conseils et bonnes pratiques pour votre quotidien</p>
 
                 <div class="relative">
                     <!-- Carrousel items -->
                     <div class="carousel-container overflow-hidden">
-                        <div class="carousel-track flex transition-transform duration-300 ease-in-out"
-                            style="width: 400%;">
+                        <div class="carousel-track flex transition-transform duration-300 ease-in-out">
                             <!-- Item 1 -->
                             <div class="carousel-item w-full flex-shrink-0 p-6">
                                 <div class="flex flex-col md:flex-row items-center">
@@ -147,21 +146,20 @@
 
                     <!-- Indicateurs -->
                     <div class="flex justify-center space-x-2 p-4">
-                        <button
-                            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"></button>
-                        <button
-                            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"></button>
-                        <button
-                            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"></button>
-                        <button
-                            class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"></button>
+                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"
+                            data-index="0"></button>
+                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"
+                            data-index="1"></button>
+                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"
+                            data-index="2"></button>
+                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-indigo-400"
+                            data-index="3"></button>
                     </div>
                 </div>
             </div>
 
-
             <!-- Actions principales -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animous3">
                 <!-- Enregistrement patient -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                     <div class="flex items-center mb-4">
@@ -287,51 +285,101 @@
 
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+
+const currentSlide = ref(0)
+const totalSlides = 4
 
 onMounted(() => {
-    // Script du carrousel
     const track = document.querySelector('.carousel-track')
-    const items = document.querySelectorAll('.carousel-item')
     const prevBtn = document.querySelector('.carousel-prev')
     const nextBtn = document.querySelector('.carousel-next')
     const indicators = document.querySelectorAll('.carousel-indicator')
 
-    let currentIndex = 0
-    const itemWidth = 100 / items.length
-
     function updateCarousel() {
-        track.style.transform = `translateX(-${currentIndex * itemWidth}%)`
+        track.style.transform = `translateX(-${currentSlide.value * 100}%)`
 
-        // Mettre à jour les indicateurs
+        // Update indicators
         indicators.forEach((indicator, index) => {
-            indicator.classList.toggle('bg-indigo-600', index === currentIndex)
-            indicator.classList.toggle('bg-gray-300', index !== currentIndex)
+            if (index === currentSlide.value) {
+                indicator.classList.add('bg-indigo-600')
+                indicator.classList.remove('bg-gray-300')
+            } else {
+                indicator.classList.remove('bg-indigo-600')
+                indicator.classList.add('bg-gray-300')
+            }
         })
     }
 
     nextBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % items.length
+        currentSlide.value = (currentSlide.value + 1) % totalSlides
         updateCarousel()
     })
 
     prevBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + items.length) % items.length
+        currentSlide.value = (currentSlide.value - 1 + totalSlides) % totalSlides
         updateCarousel()
     })
 
-    indicators.forEach((indicator, index) => {
+    indicators.forEach(indicator => {
         indicator.addEventListener('click', () => {
-            currentIndex = index
+            currentSlide.value = parseInt(indicator.dataset.index)
             updateCarousel()
         })
     })
 
-    // Auto-rotation optionnelle (décommentez si souhaité)
-    setInterval(() => {
-        currentIndex = (currentIndex + 1) % items.length
+    // Auto-rotation
+    const interval = setInterval(() => {
+        currentSlide.value = (currentSlide.value + 1) % totalSlides
         updateCarousel()
     }, 5000)
+
+    // Cleanup on component unmount
+    return () => clearInterval(interval)
 })
 </script>
-    
+
+<style scoped>
+.animous {
+    opacity: 0;
+    animation: appear 1s ease-in-out forwards;
+}
+
+.animous2 {
+    opacity: 0;
+    animation: appear 1s ease-in-out 1s forwards;
+}
+
+.animous3 {
+    opacity: 0;
+    animation: appear 1s ease-in-out 2s forwards;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease;
+}
+
+.carousel-item {
+    flex: 0 0 100%;
+    min-width: 100%;
+}
+</style>

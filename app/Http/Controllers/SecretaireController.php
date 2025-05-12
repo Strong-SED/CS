@@ -16,4 +16,8 @@ class SecretaireController extends Controller
     public function V_Dashboard(){
         return Inertia::render('Secretaire/Dashboard');
     }
+
+    public function V_CreateP(){
+        return Inertia::render('Secretaire/CreateP');
+    }
 }

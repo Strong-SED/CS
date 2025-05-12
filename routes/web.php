@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
     // Secrétaire
     Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');
     Route::get('/Secretaire/Dashboard', [SecretaireController::class , 'V_Dashboard'])->name('Secretaire.Dashboard');
+    Route::get('/Secretaire/CreateP', [SecretaireController::class , 'V_CreateP'])->name('Secretaire.CreateP');
+
 
     // Laborantin
     Route::get('/Laborantin', fn() => Inertia::render('Laborantin/Home'))->name('Laborantin.Home');
