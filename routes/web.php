@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DossierMedicalController;
+use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\SecretaireController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\UserController;
@@ -86,6 +88,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');
     Route::get('/Secretaire/Dashboard', [SecretaireController::class , 'V_Dashboard'])->name('Secretaire.Dashboard');
     Route::get('/Secretaire/CreateP', [SecretaireController::class , 'V_CreateP'])->name('Secretaire.CreateP');
+    Route::post('/Secretaire/Store', [SecretaireController::class, 'store'])->name('Secretaire.StoreP');
+    Route::put('/Secretaire/Update/{id}', [SecretaireController::class, 'update'])->name('Secretaire.UpdateP');
+    Route::delete('/Secretaire/{id}/Delete', [SecretaireController::class, 'destroy'])->name('Secretaire.DeleteP');
+    Route::post('/dossiers-medicaux', [DossierMedicalController::class, 'store'])->name('dossiers-medicaux.store');
+
+    Route::get('/Secretaire/Rdv' , [RendezVousController::class , 'Rdv_V'])->name('Secretaire.Rdv');
+
+    // Visualisation du dossier médical
+    Route::get('/Patients/{id}/Dossier', [SecretaireController::class, 'showMedicalRecord'])->name('Secretaire.ShowDossier');
 
 
     // Laborantin

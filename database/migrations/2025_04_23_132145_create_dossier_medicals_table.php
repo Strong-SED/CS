@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('dossier_medicals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained();
-            $table->date('date_creation');
             $table->string('groupe_sanguin')->nullable();
             $table->text('allergies')->nullable();
-            $table->text('historique_medical')->nullable();
+            $table->text('antecedents_medicaux')->nullable();
             $table->timestamps();
         });
+        
     }
 
     /**

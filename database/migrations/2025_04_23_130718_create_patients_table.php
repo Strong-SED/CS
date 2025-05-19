@@ -16,10 +16,15 @@ return new class extends Migration
             $table->string('nom');
             $table->string('prenom');
             $table->date('date_naissance');
-            $table->string('sexe');
+            $table->string('genre');
             $table->string('adresse')->nullable();
-            $table->string('telephone')->nullable();
-            $table->string('email')->nullable();
+            $table->string('telephone')->nullable()->unique();
+            $table->string('email')->nullable()->unique();
+            $table->enum('status', [
+                'actif',
+                'inactif',
+            ])->default('actif');
+
             $table->string('npi')->unique();
             $table->timestamps();
         });

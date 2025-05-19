@@ -22,8 +22,9 @@ class Secretaire extends User
     }
 
     // Relations spécifiques aux secrétaires
-    public function centreDeSante(){
-        return $this->belongsTo(CentreDeSante::class , 'centre_de_sante_id');
+    public function centreDeSante()
+    {
+        return $this->belongsTo(CentreDeSante::class, 'centre_de_sante_id');
     }
 
     public function factures()
@@ -34,19 +35,12 @@ class Secretaire extends User
     // Relation avec les enregistrements CentrePatient qu'il a créés
     public function enregistrementsPatients()
     {
-        return $this->hasMany(Centre_patient::class, 'created_by');
+        return $this->hasMany(Centre_patient::class, 'created_by_user_id');
     }
 
-    // Relation indirecte avec les patients via CentrePatient
     public function patients()
     {
-        return $this->hasManyThrough(
-            Patient::class,
-            Centre_patient::class,
-            'created_by',    // Clé étrangère sur centre_patient
-            'id',            // Clé primaire patient
-            'id',            // Clé primaire secretaire
-            'patient_id'      // Clé étrangère sur centre_patient
-        );
+        return $this->belongsToMany(Patient::class, 'centre_patient', 'created_by_user_id', 'patient_id')
+            ->withPivot('centre_de_sante_id', 'date_enregistrement');
     }
 }

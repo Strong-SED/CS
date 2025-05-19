@@ -6,6 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Patient extends Model
 {
+
+    protected $fillable = [
+        'nom',
+        'prenom',
+        'date_naissance',
+        'genre',
+        'adresse',
+        'telephone',
+        'email',
+        'npi',
+        'status'
+    ];
+
+    protected $casts = [
+        'date_naissance' => 'date'
+    ];
+
+
     public function dossierMedical()
     {
         return $this->hasOne(DossierMedical::class);
@@ -21,24 +39,15 @@ class Patient extends Model
         return $this->hasMany(Facture::class);
     }
 
-    // Relation many-to-many avec les centres
     public function centres()
     {
-        return $this->belongsToMany(CentreDeSante::class, 'centre_patient')
-                    ->withPivot('created_by_user_id', 'date_enregistrement')
-                    ->withTimestamps();
+        return $this->belongsToMany(CentreDeSante::class, 'centre_patient', 'patient_id', 'centre_de_sante_id')
+            ->withPivot('created_by_user_id', 'date_enregistrement');
     }
 
-    // Relation vers les secrétaires qui ont enregistré le patient
     public function secretaires()
     {
-        return $this->hasManyThrough(
-            User::class,
-            'centre_patient',
-            'patient_id',       // Clé étrangère sur centre_patient
-            'id',              // Clé primaire de users
-            'id',              // Clé primaire de patients
-            'created_by_user_id' // Clé étrangère sur centre_patient
-        )->where('role', User::ROLE_SECRETAIRE);
+        return $this->belongsToMany(User::class, 'centre_patient', 'patient_id', 'created_by_user_id')
+            ->where('role', User::ROLE_SECRETAIRE);
     }
 }
