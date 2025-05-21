@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DossierMedicalController;
+use App\Http\Controllers\MedecinController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\SecretaireController;
 use App\Http\Controllers\SuperAdminController;
@@ -82,7 +83,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Médecin
-    Route::get('/Medecin', fn() => Inertia::render('Medecin/Home'))->name('Medecin.Home');
+    Route::get('/Medecin',[MedecinController::class , 'Home'])->name('Medecin.Home');
+    Route::get('/Medecin/InfosPatient',[MedecinController::class , 'InfosPatient'])->name('Medecin.Patients');
 
     // Secrétaire
     Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');
