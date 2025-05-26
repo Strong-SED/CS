@@ -15,15 +15,15 @@ class Facture extends Model
         'centre_de_sante_id',
         'numero_facture',
         'date_emission',
-        'montant_total',
+        'montant', // ✅ DOIT ÊTRE LÀ
         'statut',
-        'details'
+        'details',
     ];
 
     // Relation avec le patient
     public function patient()
     {
-        return $this->belongsTo(Patient::class , 'patient_id');
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     // Relation avec le secrétaire

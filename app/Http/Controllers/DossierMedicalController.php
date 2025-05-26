@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consultation;
 use App\Models\DossierMedical;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -39,5 +40,5 @@ class DossierMedicalController extends Controller
             ->with('success', 'Dossier médical créé avec succès.');
     }
 
-    
+
 }

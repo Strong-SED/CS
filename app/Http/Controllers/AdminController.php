@@ -71,10 +71,12 @@ class AdminController extends Controller
         ]);
     }
 
+
     public function V_create()
     {
         return inertia('Admin/Create');
     }
+    
 
     public function store(Request $request)
     {

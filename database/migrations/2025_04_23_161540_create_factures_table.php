@@ -31,8 +31,9 @@ return new class extends Migration
             $table->string('numero_facture')->unique();
             $table->date('date_emission');
             $table->decimal('montant', 10, 2);
-            $table->enum('statut', ['impaye', 'paye'])->default('impaye');
-            $table->text('details')->nullable();
+            $table->enum('statut', ['impaye' ,'paye'])->default('impaye');
+            $table->json('details')->nullable();    
+
 
             // Timestamps
             $table->timestamps();

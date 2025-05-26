@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DossierMedicalController;
 use App\Http\Controllers\MedecinController;
 use App\Http\Controllers\RendezVousController;
@@ -85,6 +86,8 @@ Route::middleware(['auth'])->group(function () {
     // Médecin
     Route::get('/Medecin',[MedecinController::class , 'Home'])->name('Medecin.Home');
     Route::get('/Medecin/InfosPatient',[MedecinController::class , 'InfosPatient'])->name('Medecin.Patients');
+    Route::get('/Medecin/Historiques_Consultation' , [MedecinController::class , 'V_Historique'])->name('Medecin.Historique');
+    Route::post('/consultations/complete', [ConsultationController::class, 'completeConsultation'])->name('consultations.complete');
 
     // Secrétaire
     Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');
@@ -94,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/Secretaire/Update/{id}', [SecretaireController::class, 'update'])->name('Secretaire.UpdateP');
     Route::delete('/Secretaire/{id}/Delete', [SecretaireController::class, 'destroy'])->name('Secretaire.DeleteP');
     Route::post('/dossiers-medicaux', [DossierMedicalController::class, 'store'])->name('dossiers-medicaux.store');
+    Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
 
     Route::get('/Secretaire/Rdv' , [RendezVousController::class , 'Rdv_V'])->name('Secretaire.Rdv');
 

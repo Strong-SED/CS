@@ -19,20 +19,23 @@ return new class extends Migration
             $table->foreignId('medecin_id')->constrained('users');
 
             // Données de la consultation
-            $table->dateTime('date_consultation');
-            $table->text('motif');
-            $table->text('diagnostic');
-            $table->text('traitement_prescrit');
+            $table->text('diagnostic')->nullable();
+            $table->text('traitement_prescrit')->nullable();
             $table->text('observations')->nullable();
 
             // Champ analyses modifié pour utiliser une enum
             $table->json('analyses')->nullable()->comment('Liste des analyses prescrites');
 
-            // Données cliniques
+            $table->dateTime('date_consultation');
+            $table->text('motif');
             $table->string('poids')->nullable();
             $table->string('taille')->nullable();
             $table->string('temperature')->nullable();
             $table->string('tension_arterielle')->nullable();
+            $table->enum('status', [
+                'en cours',
+                'terminé',
+            ])->default('en cours');
 
             // Métadonnées
             $table->timestamps();

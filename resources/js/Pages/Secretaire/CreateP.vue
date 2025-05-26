@@ -513,6 +513,13 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                            <!-- Dans le template, après la partie qui affiche les infos du dossier médical -->
+                                            <div class="mt-6 flex justify-end" v-if="medicalRecord">
+                                                <button @click="initConsultation" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                                    <i class="fas fa-stethoscope mr-2 -ml-1"></i>
+                                                    Nouvelle Consultation
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div class="px-4 py-5 sm:p-6 text-center" v-else>
@@ -630,7 +637,7 @@
                                 </div> -->
 
                                 <div class="sm:col-span-6">
-                                    <label for="antecedents_medicaux" class="block text-sm font-medium text-gray-700">Antécédents Familiaux</label>
+                                    <label for="antecedents_medicaux" class="block text-sm font-medium text-gray-700">Antécédents Médicaux</label>
                                     <textarea v-model="dossierMedical.antecedents_medicaux" id="antecedents_medicaux" rows="3" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3"></textarea>
                                 </div>
                             </div>
@@ -654,6 +661,89 @@
             </div>
         </Dialog>
     </TransitionRoot>
+
+    <!-- Consultation Modal -->
+        <TransitionRoot appear :show="showConsultationModal" as="template">
+            <Dialog as="div" class="relative z-50" @close="showConsultationModal = false">
+                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+                    <div class="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+                </TransitionChild>
+
+                <div class="fixed inset-0 overflow-y-auto">
+                    <div class="flex min-h-full items-center justify-center p-4 text-center">
+                        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+                            <DialogPanel class="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 flex items-center">
+                                    <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 mr-3">
+                                        <i class="fas fa-stethoscope text-indigo-600"></i>
+                                    </div>
+                                    Nouvelle Consultation pour {{ selectedPatient?.prenom }} {{ selectedPatient?.nom }}
+                                </DialogTitle>
+
+                                <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                                    <div class="sm:col-span-6">
+                                        <label for="motif" class="block text-sm font-medium text-gray-700">Motif de la consultation *</label>
+                                        <textarea v-model="consultation.motif" id="motif" rows="2" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3" required></textarea>
+                                        <p v-if="consultationErrors.motif" class="mt-1 text-sm text-red-600">{{ consultationErrors.motif }}</p>
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label for="date_consultation" class="block text-sm font-medium text-gray-700">Date et heure *</label>
+                                        <input type="datetime-local" v-model="consultation.date_consultation" id="date_consultation" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3" required>
+                                        <p v-if="consultationErrors.date_consultation" class="mt-1 text-sm text-red-600">{{ consultationErrors.date_consultation }}</p>
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label for="medecin_id" class="block text-sm font-medium text-gray-700">Médecin *</label>
+                                        <select v-model="consultation.medecin_id" id="medecin_id" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3" required>
+                                            <option value="">Sélectionner un médecin</option>
+                                            <option v-for="medecin in medecinsLibres" :key="medecin.id" :value="medecin.id">
+                                                {{ medecin.nom }} {{ medecin.prenom }}
+                                            </option>
+                                        </select>
+                                        <p v-if="consultationErrors.medecin_id" class="mt-1 text-sm text-red-600">{{ consultationErrors.medecin_id }}</p>
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label for="poids" class="block text-sm font-medium text-gray-700">Poids (kg)</label>
+                                        <input type="text" v-model="consultation.poids" id="poids" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3">
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label for="taille" class="block text-sm font-medium text-gray-700">Taille (cm)</label>
+                                        <input type="text" v-model="consultation.taille" id="taille" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3">
+                                    </div>
+
+                                    <div class="sm:col-span-2">
+                                        <label for="temperature" class="block text-sm font-medium text-gray-700">Température (°C)</label>
+                                        <input type="text" v-model="consultation.temperature" id="temperature" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3">
+                                    </div>
+
+                                    <div class="sm:col-span-3">
+                                        <label for="tension_arterielle" class="block text-sm font-medium text-gray-700">Tension artérielle</label>
+                                        <input type="text" v-model="consultation.tension_arterielle" id="tension_arterielle" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3" placeholder="Ex: 120/80">
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 flex justify-end space-x-3">
+                                    <button type="button" class="inline-flex justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="showConsultationModal = false">
+                                        Annuler
+                                    </button>
+                                    <button type="button" :disabled="isCreatingConsultation" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed" @click="createConsultation">
+                                        <span v-if="isCreatingConsultation">
+                                            <i class="fas fa-spinner fa-spin mr-2"></i> Enregistrement...
+                                        </span>
+                                        <span v-else>
+                                            <i class="fas fa-save mr-2"></i> Enregistrer
+                                        </span>
+                                    </button>
+                                </div>
+                            </DialogPanel>
+                        </TransitionChild>
+                    </div>
+                </div>
+            </Dialog>
+        </TransitionRoot>
 </div>
 </template>
 
@@ -681,6 +771,7 @@ import {
 const props = defineProps({
     patients: Object,
     filters: Object,
+    medecinsLibres: Object
 })
 
 // State
@@ -884,31 +975,33 @@ function savePatient() {
     isSaving.value = true;
     errors.value = {};
 
-    // Formater correctement la date avant envoi
     const patientData = {
         ...newPatient.value,
         date_naissance: formatDateForInput(newPatient.value.date_naissance)
     };
 
     router.post(route('Secretaire.StoreP'), patientData, {
-        preserveScroll: true,
+        preserveScroll: true, // Conserver la position de défilement
+        preserveState: true, // Conserver l'état du composant Vue
         onSuccess: (response) => {
             showAddPatientModal.value = false;
 
-            // Récupération du patient depuis la réponse
-            const patient = response.props.flash.patient;
+            // La réponse flash est toujours accessible via usePage().props.flash
+            // Assurez-vous que le patient est bien envoyé dans la session flash côté Laravel
+            const patient = usePage().props.flash.patient;
 
             if (!patient || !patient.id) {
-                console.error("Patient non reçu dans la réponse", response);
+                console.error("Patient non reçu dans la réponse flash", response);
                 showToast("Patient créé avec succès", 'success');
-                fetchPatients();
-                return;
+                fetchPatients(); // Recharger les patients même si l'ID n'est pas directement récupéré ici
+            } else {
+                newlyCreatedPatientId.value = patient.id;
+                showConfirmCreateDossierModal.value = true;
+                showToast("Patient créé avec succès !", 'success'); // Déplacé ici pour une meilleure logique
             }
 
-            newlyCreatedPatientId.value = patient.id;
-            showConfirmCreateDossierModal.value = true;
             resetPatientForm();
-            fetchPatients();
+            fetchPatients(); // Recharger les patients pour voir le nouveau patient ajouté
         },
         onError: (err) => {
             errors.value = err;
@@ -1035,4 +1128,69 @@ function nextPage() {
 watch(genreFilter, () => {
     fetchPatients()
 })
+
+
+
+
+
+// Consultation
+
+const showConsultationModal = ref(false)
+const isCreatingConsultation = ref(false)
+const consultation = ref({
+    dossier_medical_id: null,
+    medecin_id: null,
+    date_consultation: '',
+    motif: '',
+    poids: '',
+    taille: '',
+    temperature: '',
+    tension_arterielle: '',
+    status: 'en cours'
+})
+const consultationErrors = ref({})
+
+
+function initConsultation() {
+    if (!selectedPatient.value || !medicalRecord.value) return
+
+    consultation.value = {
+        dossier_medical_id: medicalRecord.value.id,
+        medecin_id: null, // À remplir avec le médecin connecté ou à sélectionner
+        date_consultation: new Date().toISOString().slice(0, 16),
+        motif: '',
+        poids: '',
+        taille: '',
+        temperature: '',
+        tension_arterielle: '',
+        status: 'en cours'
+    }
+
+    showConsultationModal.value = true
+}
+
+function createConsultation() {
+    isCreatingConsultation.value = true
+    consultationErrors.value = {}
+
+    router.post(route('consultations.store'), consultation.value, {
+        preserveScroll: true,
+        onSuccess: () => {
+            showConsultationModal.value = false
+            // showToast('Consultation créée avec succès', 'success')
+
+            // Recharger les données si nécessaire
+            if (selectedPatient.value) {
+                // Vous pourriez vouloir recharger les données du patient ici
+                // pour afficher la nouvelle consultation dans son historique
+            }
+        },
+        onError: (errors) => {
+            consultationErrors.value = errors
+        },
+        onFinish: () => {
+            isCreatingConsultation.value = false
+        }
+    })
+}
 </script>

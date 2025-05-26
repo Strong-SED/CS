@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Medecin;
 use App\Models\Patient;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,8 +49,18 @@ class SecretaireController extends Controller
 
         $patients = $query->paginate(6)->withQueryString();
 
+        // Requête pour les médecins sans consultation en cours
+        $medecinsLibres = Medecin::where('role', 'medecin')
+            ->whereDoesntHave('consultations', function ($query) {
+                $query->where('status', 'en cours');
+            })
+            ->get(['id', 'nom', 'prenom']);
+
+        // dd($medecinsLibres);
+
         return Inertia::render('Secretaire/CreateP', [
             'patients' => $patients,
+            'medecinsLibres' => $medecinsLibres,
             'filters' => $request->only(['search', 'genre']) // Changé de status à genre
         ]);
     }

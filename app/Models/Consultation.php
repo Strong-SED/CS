@@ -48,7 +48,7 @@ class Consultation extends Model
         );
     }
 
-    public function dossier()
+    public function dossierMedical()
     {
         return $this->belongsTo(DossierMedical::class , 'dossier_medical_id');
     }
