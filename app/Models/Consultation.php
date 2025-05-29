@@ -21,7 +21,8 @@ class Consultation extends Model
         'poids',
         'taille',
         'temperature',
-        'tension_arterielle'
+        'tension_arterielle',
+        'status'    
     ];
 
     protected $casts = [

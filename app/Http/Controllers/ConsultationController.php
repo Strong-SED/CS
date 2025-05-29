@@ -79,6 +79,7 @@ class ConsultationController extends Controller
             'analyses' => 'nullable|array',
             'montant' => 'required|numeric|min:0',
             'laborantin_id'=> 'required',
+            // 'status'=> 'required',
         ]);
 
         // dd($validated);
@@ -91,7 +92,7 @@ class ConsultationController extends Controller
                 'traitement_prescrit' => $validated['traitement_prescrit'],
                 'observations' => $validated['observations'],
                 'analyses' => $validated['analyses'],
-                'status' => 'terminé',
+                'status' => "terminé",
                 // 'date_fin' => now(),
             ]);
 
@@ -105,7 +106,7 @@ class ConsultationController extends Controller
                 'centre_de_sante_id' => $centreId,
                 'numero_facture' => 'FACT-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
                 'date_emission' => now(),
-                'montant' => $validated['montant'], 
+                'montant' => $validated['montant'], // ✅ AJOUT ICI
                 'statut' => 'impaye',
                 'details' => json_encode([
                     'consultation_id' => $consultation->id,

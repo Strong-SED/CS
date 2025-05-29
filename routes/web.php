@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DossierMedicalController;
+use App\Http\Controllers\FactureController;
+use App\Http\Controllers\LaborantinController;
 use App\Http\Controllers\MedecinController;
 use App\Http\Controllers\RendezVousController;
 use App\Http\Controllers\SecretaireController;
@@ -103,11 +105,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/consultations', [ConsultationController::class, 'store'])->name('consultations.store');
 
     Route::get('/Secretaire/Rdv' , [RendezVousController::class , 'Rdv_V'])->name('Secretaire.Rdv');
+    Route::get('Secretaire/Facture' , [FactureController::class , 'V_facture'])->name('Secretaire.facture');
+    Route::put('/factures/{facture}/update-status', [FactureController::class, 'updateStatus'])->name('factures.updateStatus');
 
     // Visualisation du dossier médical
     Route::get('/Patients/{id}/Dossier', [SecretaireController::class, 'showMedicalRecord'])->name('Secretaire.ShowDossier');
 
 
     // Laborantin
-    Route::get('/Laborantin', fn() => Inertia::render('Laborantin/Home'))->name('Laborantin.Home');
+    Route::get('/Laborantin/Home', [LaborantinController::class, 'Home'])->name('Laborantin.Home');
 });

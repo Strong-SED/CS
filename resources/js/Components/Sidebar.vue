@@ -136,11 +136,11 @@
                     <span class="ml-3 font-medium">Rendez-Vous</span>
                 </Link>
 
-                <Link :href="route('Secretaire.Dashboard')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link :href="route('Secretaire.facture')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-tachometer-alt text-lg"></i>
+                        <i class=" fas fa-solid fa-file-invoice-dollar text-lg"></i>
                     </div>
-                    <span class="ml-3 font-medium">Dashboard</span>
+                    <span class="ml-3 font-medium">Factures</span>
                 </Link>
 
             </div>
@@ -149,12 +149,12 @@
             <div
                 class="flex-1 px-3 py-4 space-y-1 overflow-y-auto"
                 v-if="user.role === role.lab">
-                <!-- SuperAdmin -->
-                <Link :href="route('SuperAdmin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+
+                <Link :href="route('Laborantin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-tachometer-alt text-sm"></i>
+                        <i class="fas fa-solid fa-house text-lg"></i>
                     </div>
-                    <span class="ml-3 font-medium">Dashboard</span>
+                    <span class="ml-3 font-medium">Home</span>
                 </Link>
 
                 <!-- Test -->

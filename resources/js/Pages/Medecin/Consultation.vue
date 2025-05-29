@@ -386,7 +386,8 @@ const consultationToComplete = ref({
     traitement_prescrit: '',
     observations: '',
     analyses: [],
-    laborantin_id: null
+    laborantin_id: null,
+    statut: 'terminé'
 })
 
 // Récupérer toutes les analyses médicales disponibles

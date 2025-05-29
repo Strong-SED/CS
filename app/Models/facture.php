@@ -20,6 +20,11 @@ class Facture extends Model
         'details',
     ];
 
+    protected $casts = [
+        'date_emission' => 'date',
+        'details' => 'array', // C'est la ligne magique !
+    ];
+
     // Relation avec le patient
     public function patient()
     {
