@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('type_analyse');
             $table->text('resultat');
             $table->dateTime('date_analyse');
-            $table->enum('statut', ['en_cours', 'termine'])->default('en_cours');
+            $table->enum('statut', ['prescrit','en_cours', 'termine'])->default('prescrit');
 
             // Timestamps
             $table->timestamps();

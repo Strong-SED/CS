@@ -81,7 +81,7 @@
 
                 <Link :href="route('Medecin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-solid fa-house-medical"></i>
+                        <i class="fas fa-solid fa-house-medical text-lg"></i>
                     </div>
                     <span class="ml-3 font-medium">Acceuil</span>
                 </Link>
@@ -89,16 +89,22 @@
                 <!-- Test -->
                 <Link  :href="route('Medecin.Patients')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class="fas fa-solid fa-book-medical"></i>
+                        <i class="fas fa-solid fa-book-medical text-lg"></i>
                     </div>
                     <span class="ml-3 font-medium">Infos Patient</span>
                 </Link>
 
                 <Link  :href="route('Medecin.Historique')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                        <i class=" fas fa-solid fa-hospital-user"></i>
+                        <i class=" fas fa-solid fa-hospital-user text-lg"></i>
                     </div>
                     <span class="ml-3 font-medium">Consultation</span>
+                </Link>
+                <Link  :href="route('Medecin.Rdv')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                    <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <i class="fas fa-solid fa-calendar text-lg"></i>
+                    </div>
+                    <span class="ml-3 font-medium">Rendez-Vous</span>
                 </Link>
 
             </div>
@@ -123,7 +129,7 @@
                     <span class="ml-3 font-medium">Gestion de patient</span>
                 </Link>
 
-                <Link :href="route('Secretaire.Dashboard')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link :href="route('Secretaire.Rdv')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                         <i class="fas fa-solid fa-calendar-days text-lg"></i>
                     </div>

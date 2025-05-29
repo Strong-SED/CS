@@ -9,10 +9,14 @@
                 <h1 class="text-3xl font-bold text-indigo-800">Gestion des Rendez-vous</h1>
                 <p class="text-gray-600">Calendrier et historique des consultations</p>
             </div>
-            <!-- Suppression du bouton "Nouveau RDV" pour la secrétaire -->
+            <div class="flex items-center space-x-2">
+                <button @click="showAddModal = true" class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i> Nouveau RDV
+                </button>
+            </div>
         </div>
 
-        <!-- Notification Toast (inchangé) -->
+        <!-- Notification Toast -->
         <TransitionRoot appear :show="showNotification" as="template">
             <div class="fixed inset-0 flex items-end justify-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50">
                 <TransitionChild enter="transform ease-out duration-300 transition" enter-from="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" enter-to="translate-y-0 opacity-100 sm:translate-x-0" leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" class="w-full max-w-sm">
@@ -34,7 +38,7 @@
             </div>
         </TransitionRoot>
 
-        <!-- Stats rapides (inchangé) -->
+        <!-- Stats rapides -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div v-for="stat in stats" :key="stat.label" class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex items-center">
@@ -49,7 +53,7 @@
             </div>
         </div>
 
-        <!-- Calendrier et Liste (inchangé) -->
+        <!-- Calendrier et Liste -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Calendrier -->
             <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -95,7 +99,7 @@
                 </div>
             </div>
 
-            <!-- Liste des RDV (inchangé) -->
+            <!-- Liste des RDV -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold">Historique des RDV</h2>
@@ -135,7 +139,71 @@
         </div>
     </div>
 
-    <!-- Modal Détails RDV - MODIFIÉ pour la secrétaire -->
+    <!-- Modal d'ajout de rdv -->
+    <TransitionRoot appear :show="showAddModal" as="template">
+        <Dialog as="div" class="relative z-50" @close="showAddModal = false">
+            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+                <div class="fixed inset-0 bg-black/25 backdrop-blur-sm" />
+            </TransitionChild>
+
+            <div class="fixed inset-0 overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4 text-center">
+                    <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+                        <DialogPanel class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                            <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 mr-3">
+                                        <i class="fas fa-calendar-plus text-indigo-600"></i>
+                                    </div>
+                                    Programmer un nouveau rendez-vous
+                                </div>
+                                <button @click="showAddModal = false" class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </DialogTitle>
+
+                            <form @submit.prevent="submitAddRdv" class="mt-6 space-y-4">
+                                <div>
+                                    <label for="patient" class="block text-sm font-medium text-gray-700">Patient *</label>
+                                    <select v-model="form.patient_id" id="patient" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                                        <option value="" disabled>Sélectionnez un patient</option>
+                                        <option v-for="patient in patients" :key="patient.id" :value="patient.id">
+                                            {{ patient.nom }} {{ patient.prenom }}
+                                        </option>
+                                    </select>
+                                    <p v-if="form.errors.patient_id" class="mt-1 text-sm text-red-600">{{ form.errors.patient_id }}</p>
+                                </div>
+
+                                <div>
+                                    <label for="addDate" class="block text-sm font-medium text-gray-700">Date et heure *</label>
+                                    <input v-model="form.date_heure" type="datetime-local" id="addDate" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+                                    <p v-if="form.errors.date_heure" class="mt-1 text-sm text-red-600">{{ form.errors.date_heure }}</p>
+                                </div>
+
+                                <div>
+                                    <label for="motif" class="block text-sm font-medium text-gray-700">Motif *</label>
+                                    <textarea v-model="form.motif" id="motif" rows="3" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border"></textarea>
+                                    <p v-if="form.errors.motif" class="mt-1 text-sm text-red-600">{{ form.errors.motif }}</p>
+                                </div>
+
+                                <div class="mt-6 flex justify-end space-x-3">
+                                    <button type="button" class="inline-flex justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500" @click="showAddModal = false">
+                                        Annuler
+                                    </button>
+                                    <button type="submit" :disabled="form.processing" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <i v-if="form.processing" class="fas fa-spinner fa-spin mr-2"></i>
+                                        Enregistrer le RDV
+                                    </button>
+                                </div>
+                            </form>
+                        </DialogPanel>
+                    </TransitionChild>
+                </div>
+            </div>
+        </Dialog>
+    </TransitionRoot>
+
+    <!-- Modal Détails RDV -->
     <TransitionRoot appear :show="showRdvModal" as="template">
         <Dialog as="div" class="relative z-50" @close="showRdvModal = false">
             <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
@@ -190,11 +258,13 @@
                             </div>
 
                             <div class="mt-6 flex justify-end space-x-3">
-                                <!-- Seules les actions de report et marquer comme respecté sont conservées -->
-                                <button v-if="selectedRdv?.etat === 'planifié'" @click="showRescheduleModal = true" class="inline-flex items-center px-4 py-2 bg-yellow-100 border border-transparent rounded-md font-medium text-xs text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                                <button v-if="selectedRdv?.etat === 'planifié' || 'reporté'" @click="updateRdvStatus('annulé')" class="inline-flex items-center px-4 py-2 bg-red-100 border border-transparent rounded-md font-medium text-xs text-red-700 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                    <i class="fas fa-times-circle mr-2"></i> Annuler
+                                </button>
+                                <button v-if="selectedRdv?.etat === 'planifié' || 'reporté'" @click="showRescheduleModal = true" class="inline-flex items-center px-4 py-2 bg-yellow-100 border border-transparent rounded-md font-medium text-xs text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500">
                                     <i class="fas fa-calendar-week mr-2"></i> Reporter
                                 </button>
-                                <button v-if="selectedRdv?.etat === 'planifié'" @click="updateRdvStatus('respecté')" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-xs text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <button v-if="selectedRdv?.etat === 'planifié' || 'reporté'" @click="updateRdvStatus('respecté')" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-medium text-xs text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
                                     <i class="fas fa-check-circle mr-2"></i> Marquer comme respecté
                                 </button>
                             </div>
@@ -205,7 +275,7 @@
         </Dialog>
     </TransitionRoot>
 
-    <!-- Modal Reporter RDV (inchangé) -->
+    <!-- Modal Reporter RDV -->
     <TransitionRoot appear :show="showRescheduleModal" as="template">
         <Dialog as="div" class="relative z-50" @close="showRescheduleModal = false">
             <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
@@ -257,7 +327,7 @@ import {
     Head,
     router,
     useForm
-} from '@inertiajs/vue3'
+} from '@inertiajs/vue3' // Importez useForm
 import {
     ref,
     computed,
@@ -282,11 +352,12 @@ const props = defineProps({
         type: Array,
         required: true
     },
-    auth: {
+    auth: { // Ajoutez la prop auth pour accéder à l'utilisateur connecté
         type: Object,
         required: true
     },
-    flash: {
+
+    flash: { // Assurez-vous que cette prop est bien passée par votre contrôleur
         type: Object,
         default: () => ({
             success: null,
@@ -298,11 +369,23 @@ const props = defineProps({
 // États
 const showRdvModal = ref(false)
 const showRescheduleModal = ref(false)
+const showAddModal = ref(false) // Nouveau: État pour la modale d'ajout
 const selectedRdv = ref(null)
 const filterEtat = ref('tous')
 const currentDate = ref(new Date())
 const newRdvDate = ref('')
 const rescheduleReason = ref('')
+
+
+
+// Nouveau: Formulaire pour ajouter un RDV
+const form = useForm({
+    patient_id: '',
+    date_heure: '',
+    motif: '',
+    medecin_id: props.auth.user.id, // Assurez-vous que le médecin connecté est passé
+    centre_de_sante_id: 1 // TODO: Récupérer dynamiquement l'ID du centre de santé si applicable
+})
 
 // Données statiques
 const daysOfWeek = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
@@ -351,7 +434,7 @@ const stats = computed(() => [{
     }
 ])
 
-// Données du calendrier (inchangé)
+// Données du calendrier
 const currentMonthName = computed(() => {
     return currentDate.value.toLocaleString('fr-FR', {
         month: 'long'
@@ -408,7 +491,7 @@ const calendarDays = computed(() => {
     return days
 })
 
-// RDV filtrés (inchangé)
+// RDV filtrés
 const filteredRdvs = computed(() => {
     let result = [...props.rdvs].sort((a, b) => new Date(a.date_rdv) - new Date(b.date_rdv))
 
@@ -419,7 +502,7 @@ const filteredRdvs = computed(() => {
     return result
 })
 
-// Méthodes utilitaires (inchangées)
+// Méthodes
 function formatDateTime(dateString) {
     if (!dateString) return ''
     const date = new Date(dateString)
@@ -450,7 +533,7 @@ function isToday(date) {
 
 function hasAppointments(date) {
     return props.rdvs.some(rdv => {
-        const rdvDate = new Date(rdv.date_heure)
+        const rdvDate = new Date(rdv.date_heure) // Utilisez date_heure ici
         return rdvDate.getDate() === date.getDate() &&
             rdvDate.getMonth() === date.getMonth() &&
             rdvDate.getFullYear() === date.getFullYear()
@@ -459,7 +542,7 @@ function hasAppointments(date) {
 
 function getAppointmentsForDay(date) {
     return props.rdvs.filter(rdv => {
-        const rdvDate = new Date(rdv.date_heure)
+        const rdvDate = new Date(rdv.date_heure) // Utilisez date_heure ici
         return rdvDate.getDate() === date.getDate() &&
             rdvDate.getMonth() === date.getMonth() &&
             rdvDate.getFullYear() === date.getFullYear()
@@ -510,6 +593,9 @@ function nextMonth() {
 }
 
 function selectDate(date) {
+    // Si vous souhaitez pré-remplir la date dans la modale d'ajout, vous pouvez faire ceci :
+    // form.date_heure = date.toISOString().slice(0, 16);
+    // showAddModal.value = true;
     console.log('Date sélectionnée:', date)
 }
 
@@ -523,7 +609,7 @@ function updateRdvStatus(newStatus) {
 
     const updateData = {
         etat: newStatus,
-        notes: newStatus === 'respecté' ? 'Rendez-vous marqué comme respecté par la secrétaire' : ''
+        notes: newStatus === 'annulé' ? 'Rendez-vous annulé par le médecin' : ''
     }
 
     router.put(route('rdvs.update', selectedRdv.value.id), updateData, {
@@ -547,7 +633,7 @@ function rescheduleRdv() {
     router.put(route('rdvs.update', selectedRdv.value.id), {
         etat: 'reporté',
         date_heure: newRdvDate.value,
-        motif_report: rescheduleReason.value ? `Reporté par la secrétaire - Raison: ${rescheduleReason.value}` : 'Rendez-vous reporté par la secrétaire'
+        motif_report: rescheduleReason.value ? `Reporté - Raison: ${rescheduleReason.value}` : 'Rendez-vous reporté'
     }, {
         preserveScroll: true,
         onSuccess: () => {
@@ -567,16 +653,57 @@ function rescheduleRdv() {
     })
 }
 
-// Notification Toast (inchangé)
+// Nouveau: Méthode pour soumettre le formulaire d'ajout de RDV
+const submitAddRdv = () => {
+    form.post(route('rdvs.store'), {
+        onSuccess: () => {
+            form.reset()
+            showAddModal.value = false
+            router.reload({ preserveScroll: true,
+                onSuccess: () => {
+                    showToast('Rendez-vous ajouté avec succès !', 'success');
+                }
+            })
+        },
+        onError: (errors) => {
+            console.error("Erreurs lors de l'ajout du RDV:", errors);
+            // Afficher le message d'erreur général ou le premier message d'erreur de validation
+            const errorMessage = Object.values(errors).flat()[0] || "Une erreur est survenue lors de l'ajout du rendez-vous.";
+            showToast(errorMessage, 'error');
+        }
+    })
+}
+
+// Initialisation
+onMounted(() => {
+    // Format initial pour le datetime-local dans la modale de report
+    const now = new Date()
+    const formatted = now.toISOString().slice(0, 16)
+    newRdvDate.value = formatted
+
+    // Initialisation de la date/heure pour la modale d'ajout
+    form.date_heure = formatted
+})
+
+
+
+
+// Nouveau: Garder un œil sur les messages flash d'Inertia
+// C'est une bonne pratique pour afficher les messages flash (succès/erreur)
+// envoyés depuis le contrôleur Laravel après une redirection
+
+// Nouveau: États pour la notification Toast
 const showNotification = ref(false)
 const notificationMessage = ref('')
-const notificationType = ref('success')
+const notificationType = ref('success') // ou 'error'
 
+// Nouvelle fonction pour afficher la notification
 function showToast(message, type) {
     notificationMessage.value = message
     notificationType.value = type
     showNotification.value = true
 
+    // Cacher la notification après 3 secondes (3000 ms)
     setTimeout(() => {
         showNotification.value = false
     }, 3000)
@@ -588,7 +715,7 @@ watch(() => props.flash.success, (message) => {
     }
 }, {
     immediate: true
-});
+}); // immediate: true pour vérifier au montage initial
 
 watch(() => props.flash.error, (message) => {
     if (message) {
@@ -596,12 +723,7 @@ watch(() => props.flash.error, (message) => {
     }
 }, {
     immediate: true
-});
+}); // immediate: true pour vérifier au montage initial
 
-// Initialisation (inchangé)
-onMounted(() => {
-    const now = new Date()
-    const formatted = now.toISOString().slice(0, 16)
-    newRdvDate.value = formatted
-})
+// ... (le reste de votre script existant)
 </script>

@@ -88,6 +88,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Medecin/InfosPatient',[MedecinController::class , 'InfosPatient'])->name('Medecin.Patients');
     Route::get('/Medecin/Historiques_Consultation' , [MedecinController::class , 'V_Historique'])->name('Medecin.Historique');
     Route::post('/consultations/complete', [ConsultationController::class, 'completeConsultation'])->name('consultations.complete');
+    Route::get('/Medecin/Rdv' , [RendezVousController::class , 'Rdv_VM'])->name('Medecin.Rdv');
+    Route::post('/rdvs', [RendezVousController::class, 'store'])->name('rdvs.store');
+    Route::put('/rdvs/{rendezVous}', [RendezVousController::class, 'update'])->name('rdvs.update');
 
     // Secrétaire
     Route::get('/Secretaire/Home', [SecretaireController::class , 'Home'])->name('Secretaire.Home');

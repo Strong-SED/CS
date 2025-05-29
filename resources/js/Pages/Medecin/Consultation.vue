@@ -110,7 +110,7 @@
                     </div>
 
                     <div v-if="consultation.diagnostic" class="mt-3">
-                        <p class="text-sm text-gray-700 line-clamp-2">{{ consultation.diagnostic }}</p>
+                        <pre class="text-sm text-gray-700 line-clamp-2">{{ consultation.diagnostic }}</pre>
                     </div>
 
                     <div class="mt-4 flex justify-end space-x-3">
@@ -179,7 +179,7 @@
                                         <label class="block text-sm font-medium text-gray-700">Statut</label>
                                         <p class="mt-1">
                                             <span class="px-2 py-1 text-xs rounded-full font-medium" :class="selectedConsultation?.status === 'en cours' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">
-                                                {{ selectedConsultation?.status === 'en cours' ? 'En cours' : 'Terminée' }}
+                                                {{ selectedConsultation?.status === 'en cours' ? 'En cours' : 'Terminé' }}
                                             </span>
                                         </p>
                                     </div>
@@ -502,11 +502,3 @@ function showToast(message, type = 'success') {
 }
 </style>
 
-<style scoped>
-.line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-</style>

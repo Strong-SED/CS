@@ -105,7 +105,7 @@ class ConsultationController extends Controller
                 'centre_de_sante_id' => $centreId,
                 'numero_facture' => 'FACT-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
                 'date_emission' => now(),
-                'montant' => $validated['montant'], // ✅ AJOUT ICI
+                'montant' => $validated['montant'], 
                 'statut' => 'impaye',
                 'details' => json_encode([
                     'consultation_id' => $consultation->id,
@@ -124,7 +124,7 @@ class ConsultationController extends Controller
                         'consultation_id' => $consultation->id,
                         'centre_de_sante_id' => $centreId,
                         'type_analyse' => $analyseCode,
-                        'statut' => 'en_cours', // valeur autorisée
+                        'statut' => 'prescrit', // valeur autorisée
                         'resultat' => '', // valeur par défaut vide
                         'date_analyse' => now(), // valeur par défaut actuelle
                     ]);

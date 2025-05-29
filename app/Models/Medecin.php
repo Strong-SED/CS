@@ -21,14 +21,15 @@ class Medecin extends User
         $this->attributes['role'] = User::ROLE_MEDECIN;
     }
 
+
     // Relations spécifiques aux médecins
+    public function centreDeSante(){
+        return $this->belongsTo(CentreDeSante::class , 'centre_de_sante_id');
+    }
+
     public function rendezVous()
     {
         return $this->hasMany(RendezVous::class);
-    }
-
-    public function centreDeSante(){
-        return $this->belongsTo(CentreDeSante::class , 'centre_de_sante_id');
     }
 
     public function consultations()

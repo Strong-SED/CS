@@ -610,7 +610,7 @@
                             <div class="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                                 <div class="sm:col-span-3">
                                     <label for="groupe_sanguin" class="block text-sm font-medium text-gray-700">Groupe Sanguin</label>
-                                    <select v-model="dossierMedical.groupe_sanguin" id="groupe_sanguin" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3">
+                                    <select v-model="dossierMedical.groupe_sanguin" id="groupe_sanguin" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-3" required>
                                         <option value="">Sélectionner</option>
                                         <option value="A+">A+</option>
                                         <option value="A-">A-</option>

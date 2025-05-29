@@ -26,8 +26,9 @@ return new class extends Migration
             // Etat
             $table->enum('etat', [
                 'planifié',
+                'respecté',
                 'annulé',
-                'reporté'
+                'reporté',
             ])->default('planifié');
 
             // Gestion des annulations
