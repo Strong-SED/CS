@@ -114,4 +114,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Laborantin
     Route::get('/Laborantin/Home', [LaborantinController::class, 'Home'])->name('Laborantin.Home');
+    Route::get('/laborantin/Analyses', [LaborantinController::class, 'V_Analyse'])->name('laborantin.Analyses');
+    Route::put('/laborantin/analyses/{analyse}/update-result', [LaborantinController::class, 'updateResult'])->name('laborantin.analyses.updateResult');
+    Route::put('/laborantin/analyses/{analyse}/start', [LaborantinController::class, 'startAnalyse'])->name('laborantin.analyses.start');
 });

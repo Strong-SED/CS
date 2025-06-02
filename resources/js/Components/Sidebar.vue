@@ -158,11 +158,11 @@
                 </Link>
 
                 <!-- Test -->
-                <Link  :href="route('SuperAdmin.Home')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
+                <Link  :href="route('laborantin.Analyses')" class="flex items-center px-4 py-3 text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all duration-200 group">
                     <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                         <i class="fas fa-regular fa-flask-vial text-sm"></i>
                     </div>
-                    <span class="ml-3 font-medium">Test-Page</span>
+                    <span class="ml-3 font-medium">Analyses</span>
                 </Link>
             </div>
 

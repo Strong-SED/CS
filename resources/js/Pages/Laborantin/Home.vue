@@ -1,9 +1,89 @@
+<script setup>
+import { Head } from '@inertiajs/vue3'
+import { onMounted, ref, defineProps } from 'vue'
+
+const props = defineProps({
+    stats: {
+        type: Object,
+        default: () => ({
+            prescrites: 0,
+            enCours: 0,
+            termineesAujourdhui: 0,
+        }),
+    },
+    // **NOUVELLES PROPS À DÉCLARER**
+    recentAnalyses: {
+        type: Array,
+        default: () => [], // Valeur par défaut si aucune donnée n'est passée
+    },
+    urgentAnalyses: {
+        type: Array,
+        default: () => [], // Valeur par défaut
+    },
+});
+
+const currentSlide = ref(0)
+const totalSlides = 4 // Nombre total d'éléments du carrousel
+
+onMounted(() => {
+    const track = document.querySelector('.carousel-track')
+    const prevBtn = document.querySelector('.carousel-prev')
+    const nextBtn = document.querySelector('.carousel-next')
+    const indicators = document.querySelectorAll('.carousel-indicator')
+
+    function updateCarousel() {
+        if (!track) return; // Sécurité au cas où l'élément n'est pas encore monté
+        track.style.transform = `translateX(-${currentSlide.value * 100}%)`
+
+        indicators.forEach((indicator, index) => {
+            if (index === currentSlide.value) {
+                indicator.classList.add('bg-blue-600')
+                indicator.classList.remove('bg-gray-300')
+            } else {
+                indicator.classList.remove('bg-blue-600')
+                indicator.classList.add('bg-gray-300')
+            }
+        })
+    }
+
+    // Ajout de vérifications pour s'assurer que les boutons existent avant d'ajouter des écouteurs
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            currentSlide.value = (currentSlide.value + 1) % totalSlides
+            updateCarousel()
+        })
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            currentSlide.value = (currentSlide.value - 1 + totalSlides) % totalSlides
+            updateCarousel()
+        })
+    }
+
+    indicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+            currentSlide.value = parseInt(indicator.dataset.index)
+            updateCarousel()
+        })
+    })
+
+    // Auto-rotation
+    const interval = setInterval(() => {
+        currentSlide.value = (currentSlide.value + 1) % totalSlides
+        updateCarousel()
+    }, 5000)
+
+    // Cleanup on component unmount
+    return () => clearInterval(interval)
+})
+</script>
+
 <template>
     <Head title="Tableau de Bord Laborantin" />
 
     <div class="px-6 py-6">
-        <div
-            class="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md border border-gray-200 p-10">
+        <div class="min-h-[calc(100vh-8rem)] bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-md border border-gray-200 p-10">
             <div class="mb-10 text-center">
                 <h1 class="text-4xl font-bold text-blue-800 mb-2">Bienvenue au Laboratoire Médical</h1>
                 <p class="text-xl text-gray-600">Tableau de bord laborantin - Gestion des analyses</p>
@@ -47,7 +127,7 @@
 
                 <div class="relative">
                     <div class="carousel-container overflow-hidden">
-                        <div class="carousel-track flex transition-transform duration-300 ease-in-out">
+                        <div class="carousel-track flex transition-transform duration-300 ease-in-out" :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
                             <div class="carousel-item w-full flex-shrink-0 p-6">
                                 <div class="flex flex-col md:flex-row items-center">
                                     <div class="bg-blue-100 p-5 rounded-full mb-4 md:mb-0 md:mr-6">
@@ -114,24 +194,18 @@
                         </div>
                     </div>
 
-                    <button
-                        class="carousel-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-blue-600">
+                    <button @click="prevSlide" class="carousel-prev absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-blue-600">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button
-                        class="carousel-next absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-blue-600">
+                    <button @click="nextSlide" class="carousel-next absolute right-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md text-gray-600 hover:text-blue-600">
                         <i class="fas fa-chevron-right"></i>
                     </button>
 
                     <div class="flex justify-center space-x-2 p-4">
-                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-blue-400"
-                            data-index="0"></button>
-                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-blue-400"
-                            data-index="1"></button>
-                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-blue-400"
-                            data-index="2"></button>
-                        <button class="carousel-indicator w-3 h-3 rounded-full bg-gray-300 hover:bg-blue-400"
-                            data-index="3"></button>
+                        <button v-for="n in totalSlides" :key="n" @click="goToSlide(n - 1)"
+                            class="carousel-indicator w-3 h-3 rounded-full"
+                            :class="{ 'bg-blue-600': currentSlide === (n - 1), 'bg-gray-300 hover:bg-blue-400': currentSlide !== (n - 1) }">
+                        </button>
                     </div>
                 </div>
             </div>
@@ -145,8 +219,7 @@
                         <h3 class="text-xl font-bold text-gray-800">Analyses prescrites</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Consulter la liste des analyses à effectuer.</p>
-                    <button
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
                         Voir les demandes <i class="fas fa-arrow-right ml-2"></i>
                     </button>
                 </div>
@@ -159,8 +232,7 @@
                         <h3 class="text-xl font-bold text-gray-800">Analyses en cours</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Mettre à jour le statut et saisir les résultats des analyses en cours.</p>
-                    <button
-                        class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm">
                         Gérer les analyses <i class="fas fa-edit ml-2"></i>
                     </button>
                 </div>
@@ -173,8 +245,7 @@
                         <h3 class="text-xl font-bold text-gray-800">Historique des analyses</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Accéder à l'historique complet de toutes les analyses effectuées.</p>
-                    <button
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
                         Consulter l'historique <i class="fas fa-search ml-2"></i>
                     </button>
                 </div>
@@ -187,8 +258,7 @@
                         <h3 class="text-xl font-bold text-gray-800">Gestion des stocks</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Gérer les niveaux de réactifs et autres consommables de laboratoire.</p>
-                    <button
-                        class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm">
                         Voir les stocks <i class="fas fa-warehouse ml-2"></i>
                     </button>
                 </div>
@@ -201,8 +271,7 @@
                         <h3 class="text-xl font-bold text-gray-800">Protocoles et procédures</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Consulter les protocoles et procédures d'analyse.</p>
-                    <button
-                        class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm">
                         Accéder aux docs <i class="fas fa-file-alt ml-2"></i>
                     </button>
                 </div>
@@ -215,31 +284,35 @@
                         <h3 class="text-xl font-bold text-gray-800">Contacter les médecins</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Faciliter la communication avec les médecins pour les clarifications.</p>
-                    <button
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
+                    <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
                         Envoyer un message <i class="fas fa-comment-medical ml-2"></i>
                     </button>
                 </div>
             </div>
 
-            <div class="mt-10 bg-red-50 border border-red-200 rounded-xl p-6">
+            <div class="mt-10 bg-red-50 border border-red-200 rounded-xl p-6" v-if="props.urgentAnalyses.length > 0 || props.stats.reactiveFaible > 0">
                 <div class="flex items-center mb-4">
                     <i class="fas fa-exclamation-circle text-2xl text-red-600 mr-3"></i>
                     <h3 class="text-xl font-bold text-red-800">Alertes laboratoire</h3>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-4 rounded-lg border border-red-100 flex items-center">
+                    <div v-if="props.urgentAnalyses.length > 0" class="bg-white p-4 rounded-lg border border-red-100 flex items-center">
+                        <i class="fas fa-clock text-red-500 mr-3"></i>
+                        <div>
+                            <p class="font-medium">Analyses urgentes à traiter</p>
+                            <ul class="text-sm text-gray-600 list-disc pl-4">
+                                <li v-for="analyse in props.urgentAnalyses" :key="analyse.id">
+                                    {{ analyse.type_analyse }} pour le patient ID {{ analyse.patient_id }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div v-if="props.stats.reactiveFaible && props.stats.reactiveFaible > 0" class="bg-white p-4 rounded-lg border border-red-100 flex items-center">
                         <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
                         <div>
                             <p class="font-medium">Réactifs faibles</p>
-                            <p class="text-sm text-gray-600">3 réactifs avec niveau critique</p>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border border-red-100 flex items-center">
-                        <i class="fas fa-clock text-red-500 mr-3"></i>
-                        <div>
-                            <p class="font-medium">Analyses urgentes en attente</p>
-                            <p class="text-sm text-gray-600">1 analyse COVID-19 prioritaire</p>
+                            <p class="text-sm text-gray-600">{{ props.stats.reactiveFaible }} réactifs avec niveau critique</p>
                         </div>
                     </div>
                 </div>
@@ -247,78 +320,6 @@
         </div>
     </div>
 </template>
-
-<script setup>
-import { Head } from '@inertiajs/vue3'
-import { onMounted, ref, defineProps } from 'vue'
-
-const props = defineProps({
-    stats: {
-        type: Object,
-        default: () => ({
-            prescrites: 0,
-            enCours: 0,
-            termineesAujourdhui: 0,
-        }),
-    },
-    // Si vous passez d'autres props comme 'lastAnalyses'
-    // lastAnalyses: {
-    //     type: Array,
-    //     default: () => [],
-    // },
-});
-
-const currentSlide = ref(0)
-const totalSlides = 4 // Nombre total d'éléments du carrousel
-
-onMounted(() => {
-    const track = document.querySelector('.carousel-track')
-    const prevBtn = document.querySelector('.carousel-prev')
-    const nextBtn = document.querySelector('.carousel-next')
-    const indicators = document.querySelectorAll('.carousel-indicator')
-
-    function updateCarousel() {
-        track.style.transform = `translateX(-${currentSlide.value * 100}%)`
-
-        // Update indicators
-        indicators.forEach((indicator, index) => {
-            if (index === currentSlide.value) {
-                indicator.classList.add('bg-blue-600') // Couleur active pour le laborantin
-                indicator.classList.remove('bg-gray-300')
-            } else {
-                indicator.classList.remove('bg-blue-600')
-                indicator.classList.add('bg-gray-300')
-            }
-        })
-    }
-
-    nextBtn.addEventListener('click', () => {
-        currentSlide.value = (currentSlide.value + 1) % totalSlides
-        updateCarousel()
-    })
-
-    prevBtn.addEventListener('click', () => {
-        currentSlide.value = (currentSlide.value - 1 + totalSlides) % totalSlides
-        updateCarousel()
-    })
-
-    indicators.forEach(indicator => {
-        indicator.addEventListener('click', () => {
-            currentSlide.value = parseInt(indicator.dataset.index)
-            updateCarousel()
-        })
-    })
-
-    // Auto-rotation
-    const interval = setInterval(() => {
-        currentSlide.value = (currentSlide.value + 1) % totalSlides
-        updateCarousel()
-    }, 5000)
-
-    // Cleanup on component unmount
-    return () => clearInterval(interval)
-})
-</script>
 
 <style scoped>
 /* Les animations sont conservées */
