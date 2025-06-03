@@ -981,31 +981,49 @@ function savePatient() {
     };
 
     router.post(route('Secretaire.StoreP'), patientData, {
-        preserveScroll: true, // Conserver la position de défilement
-        preserveState: true, // Conserver l'état du composant Vue
-        onSuccess: (response) => {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: (page) => { // Renommez 'response' en 'page' pour plus de clarté car c'est l'objet Inertia page
             showAddPatientModal.value = false;
 
-            // La réponse flash est toujours accessible via usePage().props.flash
-            // Assurez-vous que le patient est bien envoyé dans la session flash côté Laravel
-            const patient = usePage().props.flash.patient;
+            // Récupérer les messages flash directement de page.props.flash
+            const flashSuccess = page.props.flash.success;
+            const flashWarning = page.props.flash.warning;
 
-            if (!patient || !patient.id) {
-                console.error("Patient non reçu dans la réponse flash", response);
-                showToast("Patient créé avec succès", 'success');
-                fetchPatients(); // Recharger les patients même si l'ID n'est pas directement récupéré ici
+            // Récupérer le patient si envoyé (utile pour le modal de dossier)
+            const patient = page.props.flash.patient;
+
+
+            if (flashSuccess) {
+                showToast(flashSuccess, 'success');
+            } else if (flashWarning) {
+                showToast(flashWarning, 'warning'); // Utilisez 'warning' pour le type de toast
             } else {
+                // En cas d'imprévu, si aucun message flash n'est défini
+                showToast("Opération patient terminée", 'success');
+            }
+
+            // Gérer l'affichage du modal de création de dossier si un patient est renvoyé
+            if (patient && patient.id) {
                 newlyCreatedPatientId.value = patient.id;
                 showConfirmCreateDossierModal.value = true;
-                showToast("Patient créé avec succès !", 'success'); // Déplacé ici pour une meilleure logique
+            } else {
+                // Si le patient n'est pas renvoyé ou n'a pas d'ID,
+                // assurez-vous que le modal de confirmation de dossier est fermé
+                showConfirmCreateDossierModal.value = false;
             }
 
             resetPatientForm();
-            fetchPatients(); // Recharger les patients pour voir le nouveau patient ajouté
+            // Recharger les patients pour voir les mises à jour, quel que soit le résultat
+            fetchPatients();
         },
         onError: (err) => {
             errors.value = err;
-            showToast("Erreur lors de la création du patient", 'error');
+            // Si Laravel envoie un message d'erreur spécifique via `with('error', ...)`
+            // vous pouvez le récupérer ici :
+            const flashError = usePage().props.flash.error;
+            showToast(flashError || "Une erreur est survenue lors de l'opération patient.", 'error');
+            console.error("Erreur lors de l'opération patient:", err);
         },
         onFinish: () => {
             isSaving.value = false;

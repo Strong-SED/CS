@@ -17,22 +17,26 @@ class Centre_patient extends Model
         'created_by_user_id',
         'date_enregistrement',
     ];
+
     protected $casts = [
         'date_enregistrement' => 'datetime',
     ];
+
     public function centreDeSante(): BelongsTo
     {
         return $this->belongsTo(CentreDeSante::class, 'centre_de_sante_id');
     }
+
     public function patient(): BelongsTo
     {
         return $this->belongsTo(Patient::class, 'patient_id');
     }
+    
     public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(Secretaire::class, 'created_by_user_id');
     }
-    
+
 
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Medecin;
 use App\Models\Patient;
+use App\Models\Secretaire;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -27,7 +28,11 @@ class SecretaireController extends Controller
 
     public function V_CreateP(Request $request)
     {
-        $query = Patient::with('dossierMedical')
+
+        $secretaire = Secretaire::findOrFail(Auth::user()->id);
+
+        $query = $secretaire->patients() // C'est ici que nous filtrons par la secrétaire connectée
+            ->with('dossierMedical')
             ->where('status', 'actif') // Ne montre que les patients actifs
             ->orderBy('created_at', 'desc');
 
@@ -102,12 +107,6 @@ class SecretaireController extends Controller
                 ->first();
 
             if ($patient) {
-                // Si le patient est inactif, on le réactive
-                if ($patient->status === 'inactif') {
-                    $patient->status = 'actif';
-                    $patient->save();
-                }
-
                 // Vérifier s'il est déjà dans ce centre
                 $exists = $patient->centres()
                     ->where('centre_de_sante_id', $validated['centre_de_sante_id'])
@@ -118,6 +117,13 @@ class SecretaireController extends Controller
                         ->with('warning', 'Ce patient est déjà enregistré dans ce centre.')
                         ->with('patient', $patient);
                 } else {
+
+                    // Si le patient est inactif, on le réactive
+                    if ($patient->status === 'inactif') {
+                        $patient->status = 'actif';
+                        $patient->save();
+                    }
+
                     // Ajouter au nouveau centre
                     $patient->centres()->attach($validated['centre_de_sante_id'], [
                         'created_by_user_id' => Auth::id(),
