@@ -23,6 +23,10 @@ return new class extends Migration
 
                 // Clé primaire composite
                 $table->primary(['centre_de_sante_id', 'patient_id']);
+                $table->enum('status', [
+                    'actif',
+                    'inactif',
+                ])->default('actif');
 
                 // Index
                 $table->index('created_by_user_id');

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Analyse;
 use App\Models\Facture;
+use App\Models\Secretaire;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class FactureController extends Controller
@@ -12,9 +14,10 @@ class FactureController extends Controller
     //
     public function V_facture()
     {
-        // Récupère toutes les factures, ou filtre-les selon tes besoins
-        // N'oublie pas de charger les relations si tu en as besoin, comme 'patient'
-        $factures = Facture::with('patient')->get(); // Supposons que tu as une relation 'patient' définie dans ton modèle Facture
+        $secretaire = Secretaire::findOrFail(Auth::user()->id);
+
+        $factures = $secretaire->factures()
+            ->with('patient')->get(); // Supposons que tu as une relation 'patient' définie dans ton modèle Facture
 
         return Inertia::render('Secretaire/Facture', [
             'factures' => $factures, // C'est ici que tu passes les données à ta vue Vue.js

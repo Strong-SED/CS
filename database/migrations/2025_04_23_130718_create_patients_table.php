@@ -20,10 +20,7 @@ return new class extends Migration
             $table->string('adresse')->nullable();
             $table->string('telephone')->nullable()->unique();
             $table->string('email')->nullable()->unique();
-            $table->enum('status', [
-                'actif',
-                'inactif',
-            ])->default('actif');
+            
 
             $table->string('npi')->unique();
             $table->timestamps();

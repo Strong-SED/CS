@@ -16,7 +16,6 @@ class Patient extends Model
         'telephone',
         'email',
         'npi',
-        'status'
     ];
 
     protected $casts = [
@@ -42,7 +41,7 @@ class Patient extends Model
     public function centres()
     {
         return $this->belongsToMany(CentreDeSante::class, 'centre_patient', 'patient_id', 'centre_de_sante_id')
-            ->withPivot('created_by_user_id', 'date_enregistrement');
+            ->withPivot('created_by_user_id', 'date_enregistrement' , 'status');
     }
 
     public function secretaires()

@@ -25,5 +25,15 @@ class AdminSeeder extends Seeder
             'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
             'centre_de_sante_id' => null, // Rattachement éventuel à un centre
         ]);
+        User::create([
+            'nom' => 'TOVO',
+            'prenom' => 'Grégoire',
+            'email' => 'gregoireadmin@gmail.com',
+            'password' => Hash::make('greg123'), // ⚠️ Utilise un mot de passe plus sécurisé en production
+            'role' => 'admin_cs',
+            'specialite' => null, // Peut rester nullable
+            'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
+            'centre_de_sante_id' => null, // Rattachement éventuel à un centre
+        ]);
     }
 }

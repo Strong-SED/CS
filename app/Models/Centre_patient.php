@@ -15,6 +15,7 @@ class Centre_patient extends Model
         'centre_de_sante_id',
         'patient_id',
         'created_by_user_id',
+        'status',
         'date_enregistrement',
     ];
 
@@ -31,7 +32,7 @@ class Centre_patient extends Model
     {
         return $this->belongsTo(Patient::class, 'patient_id');
     }
-    
+
     public function createdByUser(): BelongsTo
     {
         return $this->belongsTo(Secretaire::class, 'created_by_user_id');

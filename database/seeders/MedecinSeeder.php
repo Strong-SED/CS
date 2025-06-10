@@ -25,5 +25,16 @@ class MedecinSeeder extends Seeder
             'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
             'centre_de_sante_id' => 1, // Rattachement éventuel à un centre
         ]);
+
+        User::create([
+            'nom' => 'TCHEGOUN',
+            'prenom' => 'Arnold',
+            'email' => 'arnoldtcheg@gmail.com',
+            'password' => Hash::make('tchegmed123'), // ⚠️ Utilise un mot de passe plus sécurisé en production
+            'role' => 'medecin',
+            'specialite' => 'Généraliste', // Peut rester nullable
+            'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
+            'centre_de_sante_id' => 2, // Rattachement éventuel à un centre
+        ]);
     }
 }

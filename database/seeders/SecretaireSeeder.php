@@ -16,7 +16,7 @@ class SecretaireSeeder extends Seeder
     {
         //
         User::create([
-            'nom' => 'Secretaire',
+            'nom' => 'ADJOVI',
             'prenom' => 'Lucy',
             'email' => 'secretaire@gmail.com',
             'password' => Hash::make('secret123'), // ⚠️ Utilise un mot de passe plus sécurisé en production
@@ -24,6 +24,17 @@ class SecretaireSeeder extends Seeder
             'specialite' => null, // Peut rester nullable
             'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
             'centre_de_sante_id' => 1, // Rattachement éventuel à un centre
+        ]);
+
+        User::create([
+            'nom' => 'BEHANZIN',
+            'prenom' => 'Géraud',
+            'email' => 'behgeraud@gmail.com',
+            'password' => Hash::make('geraudsec123'), // ⚠️ Utilise un mot de passe plus sécurisé en production
+            'role' => 'secretaire',
+            'specialite' => null, // Peut rester nullable
+            'email_verified_at' => now(), // Marque l'email comme vérifié immédiatement
+            'centre_de_sante_id' => 2, // Rattachement éventuel à un centre
         ]);
     }
 }

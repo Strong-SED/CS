@@ -50,7 +50,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Téléphone</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Statut</th>
+                                Adresse</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions</th>
                         </tr>
@@ -67,7 +67,7 @@
                                         </div>
                                     </div>
                                     <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ patient.prenom }}</div>
+                                        <div class="text-sm font-medium text-gray-900">{{ patient.prenom }}  {{ patient.nom }}</div>
                                         <div class="text-sm text-gray-500">{{ patient.email }}</div>
                                     </div>
                                 </div>
@@ -82,8 +82,8 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ patient.telephone }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="getStatusClass(patient.status)">
-                                    {{ patient.status || 'Actif' }}
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                    {{ patient.adresse }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -202,12 +202,14 @@
             <TransitionChild enter="transform ease-out duration-300 transition" enter-from="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2" enter-to="translate-y-0 opacity-100 sm:translate-x-0" leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" class="w-full max-w-sm">
                 <div class="w-full h-20 border-l-5 bg-white rounded-xl shadow-lg pointer-events-auto" :class="{
                     'border-green-600': notificationType === 'success',
-                    'border-red-600': notificationType === 'error'
+                    'border-red-600': notificationType === 'error',
+                    'border-orange-600': notificationType === 'warning',
                 }">
                     <div class="w-full h-full p-3 grid grid-cols-5 items-center">
                         <div class="flex justify-center items-center col-span-1">
                             <i v-if="notificationType === 'success'" class="fas text-3xl text-green-600 fa-solid fa-circle-check"></i>
                             <i v-if="notificationType === 'error'" class="fas text-3xl text-red-600 fa-solid fa-circle-exclamation"></i>
+                            <i v-if="notificationType === 'warning'" class="fas text-3xl text-orange-600 fa-solid fa-circle-exclamation"></i>
                         </div>
                         <p class="text-sm text-slate-900 w-full col-span-4">
                             {{ notificationMessage }}
@@ -780,7 +782,7 @@ const selectedPatient = ref(null)
 const medicalRecord = ref(null)
 const activeTab = ref('info')
 const searchQuery = ref(props.filters.search || '')
-const genreFilter = ref(props.filters.genre || '') // Changé de statusFilter à genreFilter
+const genreFilter = ref(props.filters.genre || '')
 const isSaving = ref(false)
 const errors = ref({})
 const showNotification = ref(false)
@@ -827,15 +829,19 @@ const showToast = (message, type) => {
     }, 5000)
 }
 
-// Watch for flash messages
+// Watch for flash messages (CENTRALISÉ ICI)
+// Ce watch devrait être le SEUL endroit où vous lisez les messages flash
 watch(() => usePage().props.flash, (flash) => {
     if (flash.success) {
         showToast(flash.success, 'success')
     } else if (flash.error) {
         showToast(flash.error, 'error')
+    } else if(flash.warning) {
+        showToast(flash.warning, 'warning')
     }
 }, {
-    deep: true
+    deep: true,
+    immediate: true // Permet de capturer les messages flash lors du premier chargement de la page
 })
 
 // Edit patient
@@ -866,9 +872,11 @@ function updatePatient() {
         onSuccess: () => {
             showEditPatientModal.value = false
             fetchPatients()
+            // Pas besoin de showToast ici, le watch le gère
         },
         onError: (errors) => {
             editErrors.value = errors
+            // Pas besoin de showToast ici, le watch le gère
         },
         onFinish: () => {
             isUpdating.value = false
@@ -890,6 +898,7 @@ function deletePatient() {
         onSuccess: () => {
             showDeleteModal.value = false
             fetchPatients()
+            // Pas besoin de showToast ici, le watch le gère
         }
     })
 }
@@ -983,25 +992,13 @@ function savePatient() {
     router.post(route('Secretaire.StoreP'), patientData, {
         preserveScroll: true,
         preserveState: true,
-        onSuccess: (page) => { // Renommez 'response' en 'page' pour plus de clarté car c'est l'objet Inertia page
+        onSuccess: (page) => {
             showAddPatientModal.value = false;
 
-            // Récupérer les messages flash directement de page.props.flash
-            const flashSuccess = page.props.flash.success;
-            const flashWarning = page.props.flash.warning;
-
             // Récupérer le patient si envoyé (utile pour le modal de dossier)
+            // NE PAS LIRE LES MESSAGES FLASH ICI - LAISSEZ LE WATCH LES GÉRER
             const patient = page.props.flash.patient;
 
-
-            if (flashSuccess) {
-                showToast(flashSuccess, 'success');
-            } else if (flashWarning) {
-                showToast(flashWarning, 'warning'); // Utilisez 'warning' pour le type de toast
-            } else {
-                // En cas d'imprévu, si aucun message flash n'est défini
-                showToast("Opération patient terminée", 'success');
-            }
 
             // Gérer l'affichage du modal de création de dossier si un patient est renvoyé
             if (patient && patient.id) {
@@ -1019,10 +1016,7 @@ function savePatient() {
         },
         onError: (err) => {
             errors.value = err;
-            // Si Laravel envoie un message d'erreur spécifique via `with('error', ...)`
-            // vous pouvez le récupérer ici :
-            const flashError = usePage().props.flash.error;
-            showToast(flashError || "Une erreur est survenue lors de l'opération patient.", 'error');
+            // NE PAS LIRE LES MESSAGES FLASH ICI - LAISSEZ LE WATCH LES GÉRER
             console.error("Erreur lors de l'opération patient:", err);
         },
         onFinish: () => {
@@ -1066,8 +1060,7 @@ function createDossierMedical() {
         preserveState: true,
         onSuccess: () => {
             showCreateDossierModal.value = false
-            showToast('Dossier médical créé avec succès', 'success')
-
+            // showToast('Dossier médical créé avec succès', 'success') // Le watch le gère
             // Recharger les données des patients pour avoir le nouveau dossier
             fetchPatients()
 
@@ -1104,7 +1097,7 @@ function initDossierCreationFromView() {
 function fetchPatients(page = 1) {
     router.get(route('Secretaire.CreateP'), {
         search: searchQuery.value,
-        genre: genreFilter.value, // Changé de status à genre
+        genre: genreFilter.value,
         page: page
     }, {
         preserveState: true,
@@ -1147,12 +1140,7 @@ watch(genreFilter, () => {
     fetchPatients()
 })
 
-
-
-
-
 // Consultation
-
 const showConsultationModal = ref(false)
 const isCreatingConsultation = ref(false)
 const consultation = ref({
@@ -1174,7 +1162,7 @@ function initConsultation() {
 
     consultation.value = {
         dossier_medical_id: medicalRecord.value.id,
-        medecin_id: null, // À remplir avec le médecin connecté ou à sélectionner
+        medecin_id: null,
         date_consultation: new Date().toISOString().slice(0, 16),
         motif: '',
         poids: '',
@@ -1195,7 +1183,7 @@ function createConsultation() {
         preserveScroll: true,
         onSuccess: () => {
             showConsultationModal.value = false
-            // showToast('Consultation créée avec succès', 'success')
+            // showToast('Consultation créée avec succès', 'success') // Le watch le gère
 
             // Recharger les données si nécessaire
             if (selectedPatient.value) {

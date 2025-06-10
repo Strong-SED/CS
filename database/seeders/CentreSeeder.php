@@ -20,5 +20,12 @@ class CentreSeeder extends Seeder
             'adresse' => 'Rue 240, Cadjehoun',
             'ville' => "Cotonou"
         ]);
+
+        CentreDeSante::create([
+            'admin_c_s_id' => 3,
+            'nom' => 'Centre de santé de Pahou',
+            'adresse' => 'Rue 299, Pahou',
+            'ville' => "Pahou"
+        ]);
     }
 }

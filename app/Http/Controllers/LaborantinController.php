@@ -85,7 +85,7 @@ class LaborantinController extends Controller
                             ])
                             ->orderBy('date_analyse', 'desc')
                             ->get();
-                            
+                                
         return Inertia::render('Laborantin/Analyse', [
             'analyses' => $analyses,
             'flash' => session()->all(['success', 'error', 'info']),
