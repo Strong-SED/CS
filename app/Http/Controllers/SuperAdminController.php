@@ -43,7 +43,7 @@ class SuperAdminController extends Controller
         return inertia('SuperAdmin/Create');
     }
 
-    
+
 
     public function store(Request $request)
     {
@@ -77,7 +77,7 @@ class SuperAdminController extends Controller
 
             return redirect()->back()->with('success', 'Admin enregistré');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Une erreur est survenue');
+            return redirect()->back()->with('error', 'Une erreur est survenue: '.$e->getMessage());
         }
     }
 
