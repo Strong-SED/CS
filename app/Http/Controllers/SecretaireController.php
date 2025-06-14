@@ -79,6 +79,7 @@ class SecretaireController extends Controller
     public function V_CreateP(Request $request)
     {
 
+        $centreId = Auth::user()->centreDeSante->id;
         $secretaire = Secretaire::findOrFail(Auth::user()->id);
 
         $query = $secretaire->patients()
@@ -107,6 +108,7 @@ class SecretaireController extends Controller
 
         // Requête pour les médecins sans consultation en cours
         $medecinsLibres = Medecin::where('role', 'medecin')
+            ->where('centre_de_sante_id' , $centreId)
             ->whereDoesntHave('consultations', function ($query) {
                 $query->where('status', 'en cours');
             })

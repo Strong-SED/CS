@@ -14,10 +14,14 @@ class FactureController extends Controller
     //
     public function V_facture()
     {
-        $secretaire = Secretaire::findOrFail(Auth::user()->id);
+        $centreId = Auth::user()->centreDeSante->id;
 
-        $factures = $secretaire->factures()
-            ->with('patient')->get(); // Supposons que tu as une relation 'patient' définie dans ton modèle Facture
+        // Récupérer toutes les factures qui appartiennent à ce centre de santé.
+        // On charge aussi les relations 'patient' et 'secretaire' pour les afficher facilement dans la vue.
+        $factures = Facture::where('centre_de_sante_id', $centreId)
+                            ->with('patient', 'secretaire')
+                            ->orderBy('date_emission', 'desc') // Optionnel: trier par date d'émission
+                            ->get(); // Supposons que tu as une relation 'patient' définie dans ton modèle Facture
 
         return Inertia::render('Secretaire/Facture', [
             'factures' => $factures, // C'est ici que tu passes les données à ta vue Vue.js

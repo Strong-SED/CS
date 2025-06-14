@@ -44,6 +44,7 @@ class MedecinController extends Controller
     {
         // Récupérer l'ID du médecin connecté
         $medecinId = Auth::user()->id;
+        $centreId = Auth::user()->centreDeSante->id;
 
         // Récupérer les consultations avec les relations nécessaires
         $consultations = Consultation::with(['medecin', 'dossierMedical.patient'])
@@ -78,7 +79,9 @@ class MedecinController extends Controller
                 ];
             });
 
-            $laborantins = Laborantin::latest()->get(['id', 'nom', 'prenom']);
+            $laborantins = Laborantin::latest()
+                ->where('centre_de_sante_id' , $centreId)
+                ->get(['id', 'nom', 'prenom']);
 
         return Inertia::render('Medecin/Consultation', [
             'consultations' => $consultations,

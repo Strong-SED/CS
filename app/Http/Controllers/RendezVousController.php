@@ -13,9 +13,15 @@ class RendezVousController extends Controller
     //
     public function Rdv_V()
     {
-        // Récupérer tous les rendez-vous avec les informations du patient associé
-        // S'assurer que 'patient' est une relation définie dans votre modèle RendezVous
-        $rdvs = RendezVous::with('patient')->get();
+        $centreId = Auth::user()->centreDeSante->id;
+
+        // Récupérer tous les rendez-vous qui appartiennent à ce centre de santé.
+        // On charge les relations 'patient' et 'medecin' pour pouvoir afficher
+        // les noms du patient et du médecin dans la vue.
+        $rdvs = RendezVous::where('centre_de_sante_id', $centreId)
+            ->with('patient', 'medecin')
+            ->orderBy('date_heure', 'asc') // Optionnel: trier par date et heure croissantes
+            ->get();
 
         // Récupérer tous les patients (si nécessaire pour d'autres fonctionnalités, ex: création de RDV qui n'est plus le cas pour la secrétaire)
         $patients = Patient::all();
