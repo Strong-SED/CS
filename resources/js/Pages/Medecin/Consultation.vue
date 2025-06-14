@@ -100,8 +100,8 @@
                                 {{ formatDateTime(consultation.date_consultation) }}
                             </div>
                             <div class="mt-1 flex items-center text-sm text-gray-600">
-                                <i class="fas fa-user-md mr-2"></i>
-                                Dr. {{ consultation.patient.prenom }} {{ consultation.patient.nom }}
+                                <i class="fas fa-solid fa-bed mr-2"></i>
+                                 {{ consultation.patient.prenom }} {{ consultation.patient.nom }}
                             </div>
                         </div>
                         <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -109,9 +109,9 @@
                         </span>
                     </div>
 
-                    <div v-if="consultation.diagnostic" class="mt-3">
+                    <!-- <div v-if="consultation.diagnostic" class="mt-3">
                         <pre class="text-sm text-gray-700 line-clamp-2">{{ consultation.diagnostic }}</pre>
-                    </div>
+                    </div> -->
 
                     <div class="mt-4 flex justify-end space-x-3">
                         <button @click="openConsultationDetails(consultation)" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
@@ -223,6 +223,11 @@
                                             <i class="fas fa-check-circle mr-2"></i> Terminer la consultation
                                         </button>
                                     </div>
+                                    <div v-if="selectedConsultation?.motif" class="bg-white p-4 rounded-lg border border-gray-200 my-3">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Motif</h4>
+                                        <p class="text-sm text-gray-900 whitespace-pre-line">{{ selectedConsultation.motif }}</p>
+                                    </div>
+
                                     <div v-if="selectedConsultation?.diagnostic" class="bg-white p-4 rounded-lg border border-gray-200">
                                         <h4 class="text-sm font-medium text-gray-700 mb-2">Diagnostic</h4>
                                         <p class="text-sm text-gray-900 whitespace-pre-line">{{ selectedConsultation.diagnostic }}</p>

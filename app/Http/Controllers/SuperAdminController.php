@@ -79,7 +79,7 @@ class SuperAdminController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Une erreur est survenue: '.$e->getMessage());
         }
-    }
+    } 
 
 
     // Méthode pour la mise à jour

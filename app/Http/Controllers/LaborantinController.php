@@ -66,6 +66,7 @@ class LaborantinController extends Controller
     public function V_Analyse()
     {
         $laborantinId = Auth::id(); // Récupère l'ID de l'utilisateur authentifié
+        $centreId = Auth::user()->centreDeSante->id;
 
         if (!$laborantinId) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
@@ -78,14 +79,16 @@ class LaborantinController extends Controller
             return redirect()->route('login')->with('error', 'Accès non autorisé.');
         }
 
-        $analyses = Analyse::where('laborantin_id', $laborantin->id) // Utilisez $laborantin->id pour être sûr
+        $analyses = Analyse::where('centre_de_sante_id', $centreId)
                             ->with([
-                                'consultation.dossierMedical.patient', // Chaîne de relations pour obtenir le patient
-                                'centre' // Relation directe pour le centre
+                                'consultation.dossierMedical.patient', // Chain of relations to get patient info
+                                'consultation.medecin',               // Get doctor info too
+                                'laborantin',                         // Ensure laborantin details are loaded
+                                'centre'                              // Direct relation for the center
                             ])
-                            ->orderBy('date_analyse', 'desc')
+                            ->orderBy('date_analyse', 'desc') // Order by analysis date, newest first
                             ->get();
-                                
+
         return Inertia::render('Laborantin/Analyse', [
             'analyses' => $analyses,
             'flash' => session()->all(['success', 'error', 'info']),

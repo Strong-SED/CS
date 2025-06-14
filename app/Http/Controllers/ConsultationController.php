@@ -6,6 +6,7 @@ use App\Models\Analyse;
 use App\Models\Consultation;
 use App\Models\DossierMedical;
 use App\Models\Facture;
+use App\Models\Secretaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -69,70 +70,83 @@ class ConsultationController extends Controller
         }
     }
 
-    public function completeConsultation(Request $request)
-    {
-        $validated = $request->validate([
-            'id' => 'required|exists:consultations,id',
-            'diagnostic' => 'required|string',
-            'traitement_prescrit' => 'nullable|string',
-            'observations' => 'nullable|string',
-            'analyses' => 'nullable|array',
-            'montant' => 'required|numeric|min:0',
-            'laborantin_id'=> 'required',
-            // 'status'=> 'required',
-        ]);
-
-        // dd($validated);
-
-        DB::transaction(function () use ($validated) {
-            // 1. Mettre à jour la consultation
-            $consultation = Consultation::findOrFail($validated['id']);
-            $consultation->update([
-                'diagnostic' => $validated['diagnostic'],
-                'traitement_prescrit' => $validated['traitement_prescrit'],
-                'observations' => $validated['observations'],
-                'analyses' => $validated['analyses'],
-                'status' => "terminé",
-                // 'date_fin' => now(),
+        public function completeConsultation(Request $request)
+        {
+            $validated = $request->validate([
+                'id' => 'required|exists:consultations,id',
+                'diagnostic' => 'required|string',
+                'traitement_prescrit' => 'nullable|string',
+                'observations' => 'nullable|string',
+                'analyses' => 'nullable|array',
+                'montant' => 'required|numeric|min:0',
+                'laborantin_id'=> 'nullable',
+                // 'status'=> 'required',
             ]);
 
-            // 2. Créer la facture
-            $patientId = $consultation->dossierMedical->patient_id;
-            $centreId = Auth::user()->centre_de_sante_id;
+            // dd($validated);
 
-            Facture::create([
-                'patient_id' => $patientId,
-                'secretaire_id' => auth()->id(),
-                'centre_de_sante_id' => $centreId,
-                'numero_facture' => 'FACT-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
-                'date_emission' => now(),
-                'montant' => $validated['montant'], // ✅ AJOUT ICI
-                'statut' => 'impaye',
-                'details' => json_encode([
-                    'consultation_id' => $consultation->id,
-                    'analyses' => $validated['analyses'],
+            DB::transaction(function () use ($validated) {
+                // 1. Mettre à jour la consultation
+                $consultation = Consultation::findOrFail($validated['id']);
+                $consultation->update([
                     'diagnostic' => $validated['diagnostic'],
-                ]),
-            ]);
+                    'traitement_prescrit' => $validated['traitement_prescrit'],
+                    'observations' => $validated['observations'],
+                    'analyses' => $validated['analyses'],
+                    'status' => "terminé",
+                    // 'date_fin' => now(),
+                ]);
 
+                // 2. Créer la facture
+                $patientId = $consultation->dossierMedical->patient_id;
+                $centreId = Auth::user()->centre_de_sante_id;
 
+            // Trouver l'ID d'une secrétaire dans ce même centre de santé
+            // Nous cherchons un utilisateur avec le rôle de secrétaire et le même centre_de_sante_id.
+            // Si plusieurs secrétaires existent, on prend le premier trouvé.
+            $secretaire = Secretaire::where('centre_de_sante_id', $centreId)->first();
 
-            // 3. Si des analyses sont prescrites, créer des entrées dans la table analyses_patient
-            if (!empty($validated['analyses'])) {
-                foreach ($validated['analyses'] as $analyseCode) {
-                    Analyse::create([
-                        'laborantin_id' => $validated['laborantin_id'],
-                        'consultation_id' => $consultation->id,
-                        'centre_de_sante_id' => $centreId,
-                        'type_analyse' => $analyseCode,
-                        'statut' => 'prescrit', // valeur autorisée
-                        'resultat' => '', // valeur par défaut vide
-                        'date_analyse' => now(), // valeur par défaut actuelle
-                    ]);
-                }
+            // Vérifier si une secrétaire a été trouvée
+            if (!$secretaire) {
+                // Si aucune secrétaire n'est trouvée, lancez une exception
+                // ou gérez cette situation selon la logique de votre application.
+                // Par exemple, vous pourriez vouloir qu'une facture ne puisse pas être créée sans secrétaire.
+                throw new \Exception("Aucune secrétaire trouvée pour le centre de santé actuel (ID: {$centreId}). Impossible de créer la facture.");
             }
-        });
 
-        return redirect()->back()->with('success' , 'Consultation terminée');
-    }
+                Facture::create([
+                    'patient_id' => $patientId,
+                    'secretaire_id' => $secretaire->id,
+                    'centre_de_sante_id' => $centreId,
+                    'numero_facture' => 'FACT-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)),
+                    'date_emission' => now(),
+                    'montant' => $validated['montant'], // ✅ AJOUT ICI
+                    'statut' => 'impaye',
+                    'details' => json_encode([
+                        'consultation_id' => $consultation->id,
+                        'analyses' => $validated['analyses'],
+                        'diagnostic' => $validated['diagnostic'],
+                    ]),
+                ]);
+
+
+
+                // 3. Si des analyses sont prescrites, créer des entrées dans la table analyses_patient
+                if (!empty($validated['analyses'])) {
+                    foreach ($validated['analyses'] as $analyseCode) {
+                        Analyse::create([
+                            'laborantin_id' => $validated['laborantin_id'],
+                            'consultation_id' => $consultation->id,
+                            'centre_de_sante_id' => $centreId,
+                            'type_analyse' => $analyseCode,
+                            'statut' => 'prescrit', // valeur autorisée
+                            'resultat' => '', // valeur par défaut vide
+                            'date_analyse' => now(), // valeur par défaut actuelle
+                        ]);
+                    }
+                }
+            });
+
+            return redirect()->back()->with('success' , 'Consultation terminée');
+        }
 }
