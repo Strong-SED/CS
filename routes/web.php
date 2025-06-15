@@ -43,6 +43,9 @@ Route::post('/reset-password', [UserController::class, 'reset_password'])
 
 Route::get('/verify-email/{token}', [UserController::class, 'verifyEmail'])->name('verifyToken');
 
+Route::get('/profile', [UserController::class, 'showProfile'])->name('profile.show');
+Route::get('/politique-confidentialite', [UserController::class, 'showPrivacyPolicy'])->name('privacy.policy');
+
 
 
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');

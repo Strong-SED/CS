@@ -219,9 +219,9 @@ onMounted(() => {
                         <h3 class="text-xl font-bold text-gray-800">Analyses prescrites</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Consulter la liste des analyses à effectuer.</p>
-                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                    <!-- <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
                         Voir les demandes <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
@@ -232,9 +232,9 @@ onMounted(() => {
                         <h3 class="text-xl font-bold text-gray-800">Analyses en cours</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Mettre à jour le statut et saisir les résultats des analyses en cours.</p>
-                    <button class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm">
+                    <!-- <button class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm">
                         Gérer les analyses <i class="fas fa-edit ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
@@ -245,9 +245,9 @@ onMounted(() => {
                         <h3 class="text-xl font-bold text-gray-800">Historique des analyses</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Accéder à l'historique complet de toutes les analyses effectuées.</p>
-                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
+                    <!-- <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
                         Consulter l'historique <i class="fas fa-search ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
@@ -258,9 +258,9 @@ onMounted(() => {
                         <h3 class="text-xl font-bold text-gray-800">Gestion des stocks</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Gérer les niveaux de réactifs et autres consommables de laboratoire.</p>
-                    <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm">
+                    <!-- <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm">
                         Voir les stocks <i class="fas fa-warehouse ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
@@ -271,12 +271,12 @@ onMounted(() => {
                         <h3 class="text-xl font-bold text-gray-800">Protocoles et procédures</h3>
                     </div>
                     <p class="text-gray-600 mb-4">Consulter les protocoles et procédures d'analyse.</p>
-                    <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm">
+                    <!-- <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm">
                         Accéder aux docs <i class="fas fa-file-alt ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                <!-- <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                     <div class="flex items-center mb-4">
                         <div class="bg-red-100 p-3 rounded-full mr-4">
                             <i class="fas fa-headset text-xl text-red-600"></i>
@@ -287,7 +287,7 @@ onMounted(() => {
                     <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm">
                         Envoyer un message <i class="fas fa-comment-medical ml-2"></i>
                     </button>
-                </div>
+                </div> -->
             </div>
 
             <div class="mt-10 bg-red-50 border border-red-200 rounded-xl p-6" v-if="props.urgentAnalyses.length > 0 || props.stats.reactiveFaible > 0">

@@ -239,10 +239,10 @@ onMounted(() => {
                     </div>
                     <p class="text-gray-600 mb-4">Créer un nouveau dossier patient avec ses informations personnelles et
                         médicales.</p>
-                    <button
+                    <!-- <button
                         class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm">
                         Nouveau patient <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <!-- Carte: Gestion des rendez-vous -->
@@ -253,16 +253,16 @@ onMounted(() => {
                         </div>
                         <h3 class="text-xl font-bold text-gray-800">Gestion des rendez-vous</h3>
                     </div>
-                    <p class="text-gray-600 mb-4">Planifier, modifier ou annuler des consultations avec les médecins
+                    <p class="text-gray-600 mb-4">Reporter ou annuler des consultations avec les médecins
                         disponibles.</p>
-                    <button
+                    <!-- <button
                         class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm">
                         Voir agenda <i class="fas fa-calendar-day ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <!-- Carte: Dossiers patients -->
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
+                <!-- <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
                     <div class="flex items-center mb-4">
                         <div class="bg-blue-100 p-3 rounded-full mr-4">
                             <i class="fas fa-folder-open text-xl text-blue-600"></i>
@@ -274,7 +274,7 @@ onMounted(() => {
                         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
                         Rechercher <i class="fas fa-search ml-2"></i>
                     </button>
-                </div>
+                </div> -->
 
                 <!-- Carte: Facturation -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
@@ -286,10 +286,10 @@ onMounted(() => {
                     </div>
                     <p class="text-gray-600 mb-4">Générer des factures pour les consultations, examens et médicaments.
                     </p>
-                    <button
+                    <!-- <button
                         class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm">
                         Nouvelle facture <i class="fas fa-file-export ml-2"></i>
-                    </button>
+                    </button> -->
                 </div>
 
                 <!-- Carte: Laboratoire -->
@@ -300,7 +300,7 @@ onMounted(() => {
                         </div>
                         <h3 class="text-xl font-bold text-gray-800">Laboratoire</h3>
                     </div>
-                    <p class="text-gray-600 mb-4">Envoyer des demandes d'analyses et suivre les résultats en attente.
+                    <p class="text-gray-600 mb-4">S'Assurer que la facture d'une consultation avec analyses soit payée 
                     </p>
                 </div>
 
@@ -318,7 +318,7 @@ onMounted(() => {
             </div>
 
             <!-- Section des alertes et urgences (les valeurs ici sont encore statiques car non demandées dynamiquement) -->
-            <div class="mt-10 bg-red-50 border border-red-200 rounded-xl p-6">
+            <!-- <div class="mt-10 bg-red-50 border border-red-200 rounded-xl p-6">
                 <div class="flex items-center mb-4">
                     <i class="fas fa-exclamation-triangle text-2xl text-red-600 mr-3"></i>
                     <h3 class="text-xl font-bold text-red-800">Alertes et urgences</h3>
@@ -339,7 +339,7 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

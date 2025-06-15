@@ -3,7 +3,7 @@
         <nav class="h-full flex flex-col">
             <!-- Logo Section -->
             <div class="p-6 pb-4">
-                <Link :href="route('SuperAdmin.Home')" class="flex items-center space-x-2">
+                <Link :href="route('privacy.policy')" class="flex items-center space-x-2">
                     <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center shadow-md">
                         <i class="fas fa-hashtag text-white text-lg"></i>
                     </div>
@@ -12,7 +12,7 @@
             </div>
 
             <!-- User Profile -->
-            <div class="px-6 py-4 flex items-center space-x-3 group cursor-pointer">
+             <Link :href="route('profile.show')" class="px-6 py-4 flex items-center space-x-3 group cursor-pointer">
                 <div class="relative">
                     <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden shadow-inner">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-indigo-600">
@@ -27,7 +27,7 @@
                     </span>
                     <span v-if="user" class="text-xs text-gray-500">{{ user.role }}</span>
                 </div>
-            </div>
+            </Link>
 
             <!-- Navigation Menu -->
 

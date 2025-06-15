@@ -36,9 +36,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = Auth::user();
+        if ($user) {
+            // Charge la relation 'centreDeSante' sur l'objet utilisateur
+            $user->load('centreDeSante');
+        }
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => Auth::user(),
+                'user' => $user,
             ],
             'flash' => [
                 'success' => session('success'),

@@ -124,4 +124,22 @@ class UserController extends Controller
             ? redirect()->route('login')->with('status', __($status))
             : back()->withErrors(['email' => [__($status)]]);
     }
+
+    public function showProfile()
+    {
+        // Récupère l'utilisateur authentifié.
+        // Si vous avez chargé des relations spécifiques (ex: centreDeSante) sur l'utilisateur
+        // via votre middleware Inertia, elles seront automatiquement disponibles.
+        // Sinon, vous pourriez les charger ici si elles sont requises pour l'affichage (ex: Auth::user()->load('centreDeSante'))
+        $user = Auth::user()->load('centreDeSante');
+
+        return Inertia::render('Auth/Profil', [
+            'user' => $user, // Passe l'objet utilisateur complet à la vue
+        ]);
+    }
+
+    public function showPrivacyPolicy()
+    {
+        return Inertia::render('PrivacyPolicy');
+    }
 }
